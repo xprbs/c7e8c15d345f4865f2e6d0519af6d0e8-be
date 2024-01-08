@@ -29,7 +29,7 @@ class InitSeeder extends Seeder
         DB::table('users')->insert(
             [
                 "name" => "Web API",
-                "email" => "webapi2@samoragroup.co.id",
+                "email" => "webapi@samoragroup.co.id",
                 "remember_token" => $random,
                 "password" => bcrypt($random),
                 "username" => "web-api",
