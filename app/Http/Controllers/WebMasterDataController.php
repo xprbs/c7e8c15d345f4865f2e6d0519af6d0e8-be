@@ -364,6 +364,13 @@ class WebMasterDataController extends Controller
     {
         $validator = Validator::make($request->all(),[
             "menus_name" => "required",
+            "menus_type" => "required",
+            "url" => "required",
+            "icon" => "required",
+            "level" => "required",
+            "parent_id" => "required",
+            "order_by" => "required",
+            "acl_subject" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -422,6 +429,7 @@ class WebMasterDataController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+
         DB::beginTransaction();
 
         try {
@@ -458,13 +466,63 @@ class WebMasterDataController extends Controller
                             ->where('menus_type','Pages')
                             ->where('level', '1')
                             ->orderBy('order_by','ASC')
-                            ->get()
-                            ->toArray();
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->menus_uid;
+            $data_array[$key]['label'] = $value->menus_name;
+        }                    
        
         $success = [
             'code' => 200,
             'message' => 'Successfully get data',
-            'data' => $model,
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function menuLevelParent(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            "level" => "nullable",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        if($request->level == 1){
+
+            $model = MenusModel::select('menus_uid','menus_name')
+                        ->where('menus_type','sectionTitle')
+                        ->where('level', '1')
+                        ->orderBy('order_by','ASC')
+                        ->get();
+
+        }else{
+
+            $model = MenusModel::select('menus_uid','menus_name')
+                        ->where('menus_type','Pages')
+                        ->where('level', '1')
+                        ->orderBy('order_by','ASC')
+                        ->get();
+        }
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->menus_uid;
+            $data_array[$key]['label'] = $value->menus_name;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
         ];
 
         return response()->json($success, 200);

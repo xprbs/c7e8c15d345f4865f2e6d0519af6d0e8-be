@@ -39,7 +39,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/menu-store', [WebMasterDataController::class, 'menuStore']);
             Route::post('/menu-list', [WebMasterDataController::class, 'menuList']);
             Route::post('/menu-delete', [WebMasterDataController::class, 'menuDelete']);
-            Route::post('/menu-level-1', [WebMasterDataController::class, 'menuLevel1']);
+            Route::post('/menu-level-parent', [WebMasterDataController::class, 'menuLevelParent']);
             Route::post('/permission-list', [WebMasterDataController::class, 'permissionList']);
             Route::post('/permission-store', [WebMasterDataController::class, 'permissionStore']);
             Route::post('/permission-delete', [WebMasterDataController::class, 'permissionDelete']);
