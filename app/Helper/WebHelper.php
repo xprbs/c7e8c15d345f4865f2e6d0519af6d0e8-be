@@ -23,18 +23,6 @@ class WebHelper
 {
     public static function USER_ACCESS($level, $user_uid)
     {
-        
-        // $model = UserHasRolesModel::select('user_has_roles.user_uid','user_has_roles.role_uid','pp.menus_uid','pp.menus_name','pp.menus_type','pp.level','pp.parent_id','pp.url','pp.icon','pp.order_by','pp.acl_action','pp.acl_subject')
-        //                         ->leftJoin('role_has_menus as rhm','user_has_roles.role_uid','rhm.roles_uid')
-        //                         ->leftJoin('menus as pp','rhm.menus_uid','pp.menus_uid')
-        //                         ->where('pp.level',$level)
-        //                         ->where('user_has_roles.user_uid', $user_uid)
-        //                         ->whereNull('pp.deleted_at')
-        //                         ->whereNull('user_has_roles.deleted_at')
-        //                         ->whereNull('rhm.deleted_at')
-        //                         ->orderBy('pp.level','ASC')
-        //                         ->orderBy('pp.order_by','ASC')
-        //                         ->get();
 
         $model = UserHasRolesModel::select('user_has_roles.user_uid','user_has_roles.role_uid','pp.menus_uid','pp.menus_name','pp.menus_type','pp.level','pp.parent_id','pp.url','pp.icon','pp.order_by','pp.acl_action','pp.acl_subject')
                                 ->leftJoin('role_has_permissions as rhp','user_has_roles.role_uid','rhp.role_uid')
@@ -57,19 +45,6 @@ class WebHelper
     public static function USER_ACCESS_SUB($level, $user_uid, $parent)
     {
         
-        // $model = UserHasRolesModel::select('user_has_roles.user_uid','user_has_roles.role_uid','pp.menus_uid','pp.menus_name','pp.menus_type','pp.level','pp.parent_id','pp.url','pp.icon','pp.order_by','pp.acl_action','pp.acl_subject')
-        //                         ->leftJoin('role_has_menus as rhm','user_has_roles.role_uid','rhm.roles_uid')
-        //                         ->leftJoin('menus as pp','rhm.menus_uid','pp.menus_uid')
-        //                         ->where('pp.level',$level)
-        //                         ->where('user_has_roles.user_uid',$user_uid)
-        //                         ->whereNull('pp.deleted_at')
-        //                         ->whereNull('user_has_roles.deleted_at')
-        //                         ->whereNull('rhm.deleted_at')
-        //                         ->where('pp.parent_id',$parent)
-        //                         ->orderBy('pp.level','ASC')
-        //                         ->orderBy('pp.order_by','ASC')
-        //                         ->get();
-
         $model = UserHasRolesModel::select('user_has_roles.user_uid','user_has_roles.role_uid','pp.menus_uid','pp.menus_name','pp.menus_type','pp.level','pp.parent_id','pp.url','pp.icon','pp.order_by','pp.acl_action','pp.acl_subject')
                                 ->leftJoin('role_has_permissions as rhp','user_has_roles.role_uid','rhp.role_uid')
                                 ->leftJoin('permissions as pv','rhp.permission_uid','pv.permissions_uid')

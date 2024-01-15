@@ -22,6 +22,8 @@ use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\WEB\RoleHasMenusModel;
 use App\Models\User;
+use App\Models\OrganizationModels;
+use App\Models\MasterQuestionModel;
 
 class WebMasterDataController extends Controller
 {
@@ -1001,6 +1003,49 @@ class WebMasterDataController extends Controller
         return response()->json($success, 200);
 
 
+    }
+
+    public function getDept(){
+
+        $model = OrganizationModels::where('unit_level','DEPT')
+                            ->orderBy('unit_description','ASC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->unit_code;
+            $data_array[$key]['label'] = $value->unit_description;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getQuestion(){
+
+        $model = MasterQuestionModel::orderBy('id','DESC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->question_uid;
+            $data_array[$key]['label'] = $value->question_name;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
     }
 
 }

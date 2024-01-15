@@ -54,6 +54,8 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/user-get-by-uid', [WebMasterDataController::class, 'userGetDataById']);
             Route::post('/list-role', [WebMasterDataController::class, 'listRole']);
             Route::post('/user-change-password', [WebMasterDataController::class, 'userChangePassword']);
+            Route::post('/get-dept', [WebMasterDataController::class, 'getDept']);
+            Route::post('/get-question', [WebMasterDataController::class, 'getQuestion']);
         });
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);
