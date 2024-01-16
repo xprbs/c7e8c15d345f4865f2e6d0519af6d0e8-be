@@ -1082,6 +1082,7 @@ class WebMasterDataController extends Controller
             $data_master[$key]['dataAreaId']          = $value->dataAreaId ;
             $data_master[$key]['question_name']          = $value->question_name ;
             $data_master[$key]['question_type']          = $value->question_type ;
+            $data_master[$key]['question_number']          = $value->question_number ;
         }
         
         $success = [
