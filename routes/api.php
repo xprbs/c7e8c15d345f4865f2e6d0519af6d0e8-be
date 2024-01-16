@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebMasterDataController;
 use App\Http\Controllers\WebTransactionController;
+use App\Http\Controllers\AuditChecklistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +61,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);
         Route::post('/check-verify-token', [WebTransactionController::class, 'VERIFY_TOKEN']);
+        
+        Route::group(['prefix' => 'audit-checklist'], function () {
+            Route::post('/store', [AuditChecklistController::class, 'auditChecklistStore']);
+            Route::post('/list', [AuditChecklistController::class, 'auditChecklist']);
+        });
 
     });
+    
 });

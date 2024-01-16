@@ -18,6 +18,7 @@ use App\Models\WEB\RolesModel;
 use App\Models\WEB\PermissionModel;
 use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
+use App\Models\AuditChecklistModel;
 
 class WebHelper
 {
@@ -84,5 +85,25 @@ class WebHelper
             'status' => 200,
             'message' => 'Authorized'
         ], 200);
+    }
+
+    public static function GENERATE_AUDIT_NUMBER()
+    {
+        $lastest = AuditChecklistModel::orderBy('id','DESC')->first();
+
+        $PREFIX = 'PA#';
+        $YEAR = date('y');
+        $MONTH = date('m');
+
+        if($lastest->count() > 0){
+            $last = Str::substr($lastest->audit_number,-4);
+            $tambah = $last + 1 ;
+            $padded = Str::padLeft($tambah, 4, '0');
+        }else{
+            
+            $padded = '0001' ;
+        }
+
+        return $PREFIX.$YEAR.$MONTH.$padded;
     }
 }
