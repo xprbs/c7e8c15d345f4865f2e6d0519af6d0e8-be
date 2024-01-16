@@ -57,6 +57,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/user-change-password', [WebMasterDataController::class, 'userChangePassword']);
             Route::post('/get-dept', [WebMasterDataController::class, 'getDept']);
             Route::post('/get-question', [WebMasterDataController::class, 'getQuestion']);
+            Route::post('/question-template-list', [WebMasterDataController::class, 'questionTemplateList']);
         });
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);

@@ -1048,4 +1048,57 @@ class WebMasterDataController extends Controller
         return response()->json($success, 200);
     }
 
+    public function questionTemplateList(Request $request)
+    {
+
+        $params = $request->filterData ;
+
+        if($request->limit == null OR $request->limit == ""){
+            $limit = 10 ;
+        }else{
+            $limit = $request->limit ;
+        }
+
+        if($request->sort == null OR $request->sort == ""){
+            $sortColumn = 'id' ;
+            $sortType = 'DESC' ;
+        }else{
+            $sort = $request->sort[0] ;
+            $sortColumn = $sort['field'] ;
+            $sortType = $sort['sort'] ;
+        }
+
+        $model = MasterQuestionModel::orderBy($sortColumn,$sortType)
+                                ->orWhere('question_name', 'LIKE', '%'.$params.'%')
+                                ->orWhere('question_type', 'LIKE', '%'.$params.'%')
+                                ->paginate($limit);
+
+        $data_master = [] ;
+
+        foreach ($model as $key => $value) {
+            // dd($value);
+            $data_master[$key]['id']          = ($model->currentPage()-1) * $model->perPage() + $key + 1 ;
+            $data_master[$key]['row_id']          = $value->id ;
+            $data_master[$key]['dataAreaId']          = $value->dataAreaId ;
+            $data_master[$key]['question_name']          = $value->question_name ;
+            $data_master[$key]['question_type']          = $value->question_type ;
+        }
+        
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_master,
+            'firstItem' => $model->firstItem(),
+            'lastItem' => $model->lastItem(),
+            'perPage' => $model->perPage(),
+            'lastPage' => $model->lastPage(),
+            'total' => $model->total(),
+            'previousPageUrl' => $model->previousPageUrl(),
+            'currentPage' => $model->currentPage(),
+            'nextPageUrl' => $model->nextPageUrl(),
+        ];
+
+        return response()->json($success, 200);
+    }
+
 }
