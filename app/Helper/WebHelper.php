@@ -19,6 +19,7 @@ use App\Models\WEB\PermissionModel;
 use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\AuditChecklistModel;
+use App\Models\MasterQuestionModel;
 
 class WebHelper
 {
@@ -105,5 +106,24 @@ class WebHelper
         }
 
         return $PREFIX.$YEAR.$MONTH.$padded;
+    }
+
+    public static function GENERATE_QT_NUMBER()
+    {
+        // Question Template Generate Number
+        $lastest = MasterQuestionModel::orderBy('id','DESC')->first();
+
+        $PREFIX = 'QT#';
+
+        if($lastest->count() > 0){
+            $last = Str::substr($lastest->question_number,-7);
+            $tambah = $last + 1 ;
+            $padded = Str::padLeft($tambah, 7, '0');
+        }else{
+            
+            $padded = '0000001' ;
+        }
+
+        return $PREFIX.$padded;
     }
 }

@@ -59,8 +59,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             // Master Data Audit Checklist
             Route::post('/get-dept', [AuditChecklistController::class, 'getDept']);
             Route::post('/get-question', [AuditChecklistController::class, 'getQuestion']);
-            Route::post('/question-template-list', [AuditChecklistController::class, 'questionTemplateList']);
             
+            Route::group(['prefix' => 'question-template'], function () {
+                Route::post('/list', [AuditChecklistController::class, 'questionTemplateList']);
+                Route::post('/store', [AuditChecklistController::class, 'questionTemplateStore']);
+            });
+
         });
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);

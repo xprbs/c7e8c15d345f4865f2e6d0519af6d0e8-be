@@ -14,5 +14,13 @@ class MasterQuestionModel extends Model
 
     protected $table = 'master_question' ;
     protected $guarded = [];
+
+    public static function boot() {
+        parent::boot();
+    
+        static::creating(function (MasterQuestionModel $item) {
+            $item->question_uid = (string)Str::uuid() ; //assigning value            
+        });
+    }
     
 }

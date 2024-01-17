@@ -77,7 +77,6 @@ class AuditChecklistController extends Controller
         return response()->json($success, 200);
     }
 
-
     public function auditChecklistStore(Request $request)
     {
 
@@ -220,5 +219,46 @@ class AuditChecklistController extends Controller
         ];
 
         return response()->json($success, 200);
+    }
+
+    public function questionTemplateStore(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            'question_name' => 'required',
+            'question_type' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(),400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $model = new MasterQuestionModel;
+            $model->question_name = $request->question_name;
+            $model->question_type = $request->question_type;
+            $model->question_number = WebHelper::GENERATE_QT_NUMBER();
+            $model->save();
+
+            DB::commit();
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully create data',
+            ], 200);
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
     }
 }
