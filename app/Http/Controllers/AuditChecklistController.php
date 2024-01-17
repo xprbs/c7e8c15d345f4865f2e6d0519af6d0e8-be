@@ -202,6 +202,7 @@ class AuditChecklistController extends Controller
             $data_master[$key]['question_name']          = $value->question_name ;
             $data_master[$key]['question_type']          = $value->question_type ;
             $data_master[$key]['question_number']          = $value->question_number ;
+            $data_master[$key]['question_uid']          = $value->question_uid ;
         }
         
         $success = [
