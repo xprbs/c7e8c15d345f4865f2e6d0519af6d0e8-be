@@ -56,7 +56,7 @@ class AuditChecklistController extends Controller
             $data_master[$key]['audit_ref']          = $value->audit_ref ;
             $data_master[$key]['audit_number']          = $value->audit_number ;
             $data_master[$key]['audit_name']          = $value->audit_name ;
-            $data_master[$key]['audit_location']          = $value->audit_location ;
+            $data_master[$key]['audit_location']          = $value->dept['unit_description'] ;
             $data_master[$key]['question_uid']          = $value->question_uid ;
         }
         
