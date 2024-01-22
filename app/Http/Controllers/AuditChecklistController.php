@@ -382,4 +382,26 @@ class AuditChecklistController extends Controller
         }
 
     }
+
+    public function getAuditCategory(){
+
+        $model = MasterData::where('doc_type','AUDIT_CATEGORY')
+                            ->orderBy('id','DESC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->key1;
+            $data_array[$key]['label'] = $value->value1;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
 }
