@@ -65,6 +65,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/store', [AuditChecklistController::class, 'questionTemplateStore']);
             });
 
+            Route::group(['prefix' => 'audit-category'], function () {
+                Route::post('/list', [AuditChecklistController::class, 'auditCategoryList']);
+                Route::post('/store', [AuditChecklistController::class, 'auditCategoryStore']);
+                Route::post('/delete', [AuditChecklistController::class, 'auditCategoryDelete']);
+            });
+
         });
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);

@@ -22,6 +22,7 @@ use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\WEB\RoleHasMenusModel;
 use App\Models\User;
+use App\Models\MasterData;
 
 class WebMasterDataController extends Controller
 {
