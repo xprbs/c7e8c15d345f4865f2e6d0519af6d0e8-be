@@ -20,10 +20,10 @@ class CreateMasterQuestionDetailModelsTable extends Migration
             $table->string('updated_by')->nullable();
             $table->softDeletes();
             $table->string('dataAreaId')->nullable();
-            $table->uuid('question_uid')->nullable();
-            $table->uuid('question_detail_uid')->nullable();
-            $table->uuid('question_answer_uid')->nullable(); // Untuk type jawaban, Yes/No atau Point (1,2,3,4,5) dan lain-lain
-            $table->text('question_asnser_description')->nullable();
+            $table->uuid('question_uid')->nullable(); // Header uid
+            $table->uuid('question_detail_uid')->nullable(); // Detail uid
+            $table->uuid('question_answer_uid')->nullable(); // Untuk type jawaban (Master type jawaban MS01), Yes/No atau Point (1,2,3,4,5) dan lain-lain
+            $table->text('question_answer_description')->nullable();
         });
     }
 

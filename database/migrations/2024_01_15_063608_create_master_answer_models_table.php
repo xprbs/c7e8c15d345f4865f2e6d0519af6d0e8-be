@@ -13,6 +13,9 @@ class CreateMasterAnswerModelsTable extends Migration
      */
     public function up()
     {
+        // Master MS01 
+        // 1 Pertanyaan = bisa banyak jawaban
+        
         Schema::create('master_answer', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();

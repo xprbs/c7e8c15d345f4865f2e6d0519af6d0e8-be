@@ -13,6 +13,7 @@ class CreateAuditChecklistAnswerModelsTable extends Migration
      */
     public function up()
     {
+        // Menyimpan jawaban 
         Schema::create('audit_checklist_answer', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
@@ -20,11 +21,11 @@ class CreateAuditChecklistAnswerModelsTable extends Migration
             $table->string('updated_by')->nullable();
             $table->softDeletes();
             $table->string('dataAreaId')->nullable();
-            $table->uuid('audit_uid')->nullable();
-            $table->uuid('question_uid')->nullable();
-            $table->uuid('question_detail_uid')->nullable();
-            $table->string('answer')->nullable();
-            $table->text('answer_description')->nullable();
+            $table->uuid('audit_uid')->nullable(); // Audit uid
+            $table->uuid('question_uid')->nullable(); // Question uid
+            $table->uuid('question_detail_uid')->nullable(); // Question detail id
+            $table->string('answer')->nullable(); // Answer
+            $table->text('answer_description')->nullable(); // Answer Description
         });
     }
 
