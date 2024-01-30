@@ -66,6 +66,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/store', [AuditChecklistController::class, 'questionTemplateStore']);
                 Route::post('/get-detail', [AuditChecklistController::class, 'questionGetDetail']);
                 Route::post('/question-detail-store', [AuditChecklistController::class, 'questionDetailStore']);
+                Route::post('/question-detail-list', [AuditChecklistController::class, 'getQuestionDetailList']);
                 Route::post('/get-master-answer', [AuditChecklistController::class, 'getMasterAnswer']);
             });
 

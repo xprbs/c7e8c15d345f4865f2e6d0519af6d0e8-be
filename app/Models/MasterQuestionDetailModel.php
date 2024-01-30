@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\MasterAnswerModel;
 
 class MasterQuestionDetailModel extends Model
 {
@@ -22,4 +23,10 @@ class MasterQuestionDetailModel extends Model
             $item->question_detail_uid = (string)Str::uuid() ; //assigning value            
         });
     }
+
+    public function answer()
+    {
+        return $this->hasOne(MasterAnswerModel::class,'question_answer_uid','question_answer_uid');
+    }
+
 }

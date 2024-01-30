@@ -502,4 +502,35 @@ class AuditChecklistController extends Controller
 
         return response()->json($success, 200);
     }
+
+    public function getQuestionDetailList(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            "question_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $model = MasterQuestionDetailModel::where('question_uid', $request->question_uid)->get();          
+        // dd($model->count());
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            
+            $data_array[$key]['id'] = $value->question_answer_uid;
+            $data_array[$key]['question_answer_description'] = $value->question_answer_description;
+            $data_array[$key]['question_answer_category'] = $value->answer->question_answer_category ?? null;
+        } 
+
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
 }
