@@ -14,4 +14,12 @@ class MasterQuestionDetailModel extends Model
 
     protected $table = 'master_question_detail' ;
     protected $guarded = [];
+
+    public static function boot() {
+        parent::boot();
+    
+        static::creating(function (MasterQuestionDetailModel $item) {
+            $item->question_detail_uid = (string)Str::uuid() ; //assigning value            
+        });
+    }
 }

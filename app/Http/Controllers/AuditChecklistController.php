@@ -17,7 +17,9 @@ use App\Helper\WebHelper;
 use App\Models\AuditChecklistModel;
 use App\Models\OrganizationModels;
 use App\Models\MasterQuestionModel;
+use App\Models\MasterQuestionDetailModel;
 use App\Models\MasterData;
+use App\Models\MasterAnswerModel;
 
 class AuditChecklistController extends Controller
 {
@@ -264,6 +266,40 @@ class AuditChecklistController extends Controller
         }
     }
 
+    public function questionGetDetail(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            'id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(),400);
+        }
+
+
+        try {
+
+            $model = MasterQuestionModel::where('question_uid', $request->id)->first();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully data data',
+                'data' => $model
+            ], 200);
+
+        } catch (Exception $e) {
+
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
     public function auditCategoryStore(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -396,6 +432,68 @@ class AuditChecklistController extends Controller
             $data_array[$key]['label'] = $value->value1;
         }                    
        
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function questionDetailStore(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "question_uid" => "required",
+            "question_answer_description" => "required",
+            "question_answer_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();  
+        try {
+            
+            $model = new MasterQuestionDetailModel;
+            $model->question_uid     = $request->question_uid;
+            $model->question_answer_description     = $request->question_answer_description;
+            $model->question_answer_uid             = $request->question_answer_uid;
+            $model->save();
+
+            DB::commit();  
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+            ], 200);
+
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
+    public function getMasterAnswer(Request $request)
+    {
+
+        $model = MasterAnswerModel::select('question_answer_uid','question_answer_category')->groupBy('question_answer_uid','question_answer_category')->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->question_answer_uid;
+            $data_array[$key]['label'] = $value->question_answer_category;
+        }                    
+        
         $success = [
             'code' => 200,
             'message' => 'Successfully get data',
