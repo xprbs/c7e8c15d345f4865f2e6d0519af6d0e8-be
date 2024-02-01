@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\Models\OrganizationModels;
+use App\Models\MasterQuestionModel;
 
 class AuditChecklistModel extends Model
 {
@@ -27,6 +28,11 @@ class AuditChecklistModel extends Model
     public function dept() 
     {
         return $this->hasOne(OrganizationModels::class,"unit_code","audit_location");
+    }
+
+    public function question() 
+    {
+        return $this->hasOne(MasterQuestionModel::class,"question_uid","question_uid");
     }
 
 }

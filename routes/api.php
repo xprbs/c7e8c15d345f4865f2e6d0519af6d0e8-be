@@ -84,6 +84,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
         Route::group(['prefix' => 'audit-checklist'], function () {
             Route::post('/store', [AuditChecklistController::class, 'auditChecklistStore']);
             Route::post('/list', [AuditChecklistController::class, 'auditChecklist']);
+            Route::post('/get-detail', [AuditChecklistController::class, 'auditChecklistGetDetail']);
         });
 
     });

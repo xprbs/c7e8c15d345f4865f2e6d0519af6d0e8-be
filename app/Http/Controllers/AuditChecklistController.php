@@ -55,12 +55,13 @@ class AuditChecklistController extends Controller
             $data_master[$key]['id']          = ($model->currentPage()-1) * $model->perPage() + $key + 1 ;
             $data_master[$key]['row_id']          = $value->id ;
             $data_master[$key]['dataAreaId']          = $value->dataAreaId ;
+            $data_master[$key]['audit_uid']          = $value->audit_uid ;
             $data_master[$key]['audit_category']          = $value->audit_category ;
             $data_master[$key]['audit_ref']          = $value->audit_ref ;
             $data_master[$key]['audit_number']          = $value->audit_number ;
             $data_master[$key]['audit_name']          = $value->audit_name ;
             $data_master[$key]['audit_location']          = $value->dept['unit_description'] ;
-            $data_master[$key]['question_uid']          = $value->question_uid ;
+            $data_master[$key]['question_uid']          = $value->question->question_name ;
         }
         
         $success = [
@@ -117,6 +118,55 @@ class AuditChecklistController extends Controller
         } catch (Exception $e) {
 
             DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
+    public function auditChecklistGetDetail(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            'id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(),400);
+        }
+
+        try {
+
+            $model = AuditChecklistModel::where('audit_uid', $request->id)->get();
+
+            $data_master = array() ;
+
+            foreach ($model as $key => $value) {
+                // dd($value);
+                $data_master['dataAreaId']          = $value->dataAreaId ;
+                $data_master['audit_uid']          = $value->audit_uid ;
+                $data_master['audit_category']          = $value->audit_category ;
+                $data_master['audit_ref']          = $value->audit_ref ;
+                $data_master['audit_number']          = $value->audit_number ;
+                $data_master['audit_name']          = $value->audit_name ;
+                $data_master['audit_location']          = $value->dept['unit_description'] ;
+                $data_master['question_uid']          = $value->question_uid ;
+                $data_master['question_name']          = $value->question->question_name ;
+            }
+        
+            
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully data data',
+                'data' => $data_master
+            ], 200);
+
+        } catch (Exception $e) {
+
             $error = [
                 'code' => 500,
                 'request' => $request->all(),
