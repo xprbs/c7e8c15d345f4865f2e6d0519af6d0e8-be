@@ -24,9 +24,14 @@ class MasterQuestionDetailModel extends Model
         });
     }
 
-    public function answer()
+    public function answerName()
     {
         return $this->hasOne(MasterAnswerModel::class,'question_answer_uid','question_answer_uid');
+    }
+
+    public function answer()
+    {
+        return $this->hasMany(MasterAnswerModel::class,'question_answer_uid','question_answer_uid')->orderBy('order','ASC');
     }
 
 }

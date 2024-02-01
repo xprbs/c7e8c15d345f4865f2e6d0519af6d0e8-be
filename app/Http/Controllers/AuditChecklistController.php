@@ -553,6 +553,20 @@ class AuditChecklistController extends Controller
         return response()->json($success, 200);
     }
 
+    public function getMasterAnswerId(Request $request)
+    {
+
+        $model = MasterAnswerModel::where('question_answer_uid', $request->id)->orderBy('order','ASC')->get();               
+        
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $model,
+        ];
+
+        return response()->json($success, 200);
+    }
+
     public function getQuestionDetailList(Request $request)
     {
 
@@ -572,7 +586,8 @@ class AuditChecklistController extends Controller
             
             $data_array[$key]['id'] = $value->question_answer_uid;
             $data_array[$key]['question_answer_description'] = $value->question_answer_description;
-            $data_array[$key]['question_answer_category'] = $value->answer->question_answer_category ?? null;
+            $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null;
+            $data_array[$key]['answer'] = $value->answer ?? null;
         } 
 
         $success = [
@@ -583,4 +598,5 @@ class AuditChecklistController extends Controller
 
         return response()->json($success, 200);
     }
+
 }
