@@ -96,7 +96,7 @@ class WebHelper
         $YEAR = date('y');
         $MONTH = date('m');
 
-        if($lastest->count()){
+        if($lastest){
             $last = Str::substr($lastest->audit_number,-4);
             $tambah = $last + 1 ;
             $padded = Str::padLeft($tambah, 4, '0');
@@ -115,7 +115,7 @@ class WebHelper
 
         $PREFIX = 'QT#';
 
-        if($lastest->count()){
+        if($lastest){
             $last = Str::substr($lastest->question_number,-7);
             $tambah = $last + 1 ;
             $padded = Str::padLeft($tambah, 7, '0');
