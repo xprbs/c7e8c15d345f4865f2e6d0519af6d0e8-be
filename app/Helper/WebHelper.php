@@ -96,7 +96,7 @@ class WebHelper
         $YEAR = date('y');
         $MONTH = date('m');
 
-        if($lastest->count() > 0){
+        if($lastest->count() ?? 0 > 0){
             $last = Str::substr($lastest->audit_number,-4);
             $tambah = $last + 1 ;
             $padded = Str::padLeft($tambah, 4, '0');
