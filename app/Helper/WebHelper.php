@@ -115,7 +115,7 @@ class WebHelper
 
         $PREFIX = 'QT#';
 
-        if($lastest->count() > 0){
+        if($lastest->count() ?? 0 > 0){
             $last = Str::substr($lastest->question_number,-7);
             $tambah = $last + 1 ;
             $padded = Str::padLeft($tambah, 7, '0');
