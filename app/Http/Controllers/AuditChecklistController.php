@@ -497,6 +497,10 @@ class AuditChecklistController extends Controller
             "question_uid" => "required",
             "question_answer_description" => "required",
             "question_answer_uid" => "required",
+            "control_point" => "required",
+            "klausul" => "required",
+            "question_category1" => "required",
+            "question_category2" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -510,6 +514,10 @@ class AuditChecklistController extends Controller
             $model->question_uid     = $request->question_uid;
             $model->question_answer_description     = $request->question_answer_description;
             $model->question_answer_uid             = $request->question_answer_uid;
+            $model->klausul                         = $request->klausul;
+            $model->control_point                   = $request->control_point;
+            $model->question_category1              = $request->question_category1;
+            $model->question_category2              = $request->question_category2;
             $model->save();
 
             DB::commit();  
@@ -586,8 +594,12 @@ class AuditChecklistController extends Controller
             
             $data_array[$key]['id'] = $value->question_answer_uid;
             $data_array[$key]['question_answer_description'] = $value->question_answer_description;
-            $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null;
-            $data_array[$key]['answer'] = $value->answer ?? null;
+            $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null ;
+            $data_array[$key]['answer'] = $value->answer ?? null ;
+            $data_array[$key]['klausul'] = $value->klausul ?? '-' ;
+            $data_array[$key]['question_category1'] = $value->question_category1 ?? '-' ;
+            $data_array[$key]['question_category2'] = $value->question_category2 ?? '-' ;
+            $data_array[$key]['control_point'] = $value->control_point ?? null ;
         } 
 
         $success = [
