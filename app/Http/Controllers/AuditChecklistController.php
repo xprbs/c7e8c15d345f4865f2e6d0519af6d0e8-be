@@ -407,7 +407,7 @@ class AuditChecklistController extends Controller
 
         $model = MasterData::orderBy($sortColumn,$sortType)
                             ->where('doc_type','AUDIT_CATEGORY')
-                            ->orWhere('value1', 'LIKE', '%'.$params.'%')
+                            ->Where('value1', 'LIKE', '%'.$params.'%')
                             ->paginate($limit);
 
         $data_master = [] ;
