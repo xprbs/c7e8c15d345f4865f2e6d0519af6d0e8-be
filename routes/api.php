@@ -60,6 +60,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-dept', [AuditChecklistController::class, 'getDept']);
             Route::post('/get-question', [AuditChecklistController::class, 'getQuestion']);
             Route::post('/get-audit-category', [AuditChecklistController::class, 'getAuditCategory']);
+            Route::post('/get-audit-category-ref', [AuditChecklistController::class, 'getAuditCategoryRef']);
             
             Route::group(['prefix' => 'question-template'], function () {
                 Route::post('/list', [AuditChecklistController::class, 'questionTemplateList']);
@@ -86,6 +87,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/store', [AuditChecklistController::class, 'auditChecklistStore']);
             Route::post('/list', [AuditChecklistController::class, 'auditChecklist']);
             Route::post('/get-detail', [AuditChecklistController::class, 'auditChecklistGetDetail']);
+            Route::post('/answer-store', [AuditChecklistController::class, 'AuditChecklistAnswerStore']);
         });
 
     });

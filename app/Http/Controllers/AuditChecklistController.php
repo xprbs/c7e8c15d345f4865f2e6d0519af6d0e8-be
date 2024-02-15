@@ -472,7 +472,30 @@ class AuditChecklistController extends Controller
     public function getAuditCategory(){
 
         $model = MasterData::where('doc_type','AUDIT_CATEGORY')
-                            ->orderBy('id','DESC')
+                            ->orderBy('value1','ASC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->key1;
+            $data_array[$key]['label'] = $value->value1;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getAuditCategoryRef(Request $request){
+
+        $model = MasterData::where('doc_type','AUDIT_CATEGORY_REF')
+                            ->where('key2', $request->key2 )
+                            ->orderBy('value1','ASC')
                             ->get();
 
         $data_array = [];
@@ -593,6 +616,7 @@ class AuditChecklistController extends Controller
         foreach ($model as $key => $value) {
             
             $data_array[$key]['id'] = $value->question_answer_uid;
+            $data_array[$key]['question_detail_uid'] = $value->question_detail_uid;
             $data_array[$key]['question_answer_description'] = $value->question_answer_description;
             $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null ;
             $data_array[$key]['answer'] = $value->answer ?? null ;
@@ -609,6 +633,53 @@ class AuditChecklistController extends Controller
         ];
 
         return response()->json($success, 200);
+    }
+
+    public function AuditChecklistAnswerStore(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "dataAreaId" => "nullable",
+            "audit_uid" => "required",
+            "question_uid" => "required",
+            "data.*.question_detail_uid" => "required",
+            "data.*.answer" => "required",
+            "data.*.answer_description" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();  
+        try {
+            
+            // $model = new AuditChecklistAnswerModel;
+            // $model->dataAreaId     = $request->dataAreaId;
+            // $model->audit_uid     = $request->audit_uid;
+            // $model->question_uid     = $request->question_uid;
+            // $model->question_detail_uid     = $request->question_detail_uid;
+            // $model->answer     = $request->answer;
+            // $model->answer_description     = $request->answer_description;
+            // $model->save();
+
+            DB::commit();  
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+            ], 200);
+
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
     }
 
 }
