@@ -20,6 +20,7 @@ use App\Models\MasterQuestionModel;
 use App\Models\MasterQuestionDetailModel;
 use App\Models\MasterData;
 use App\Models\MasterAnswerModel;
+use App\Models\AuditChecklistAnswerModel;
 
 class AuditChecklistController extends Controller
 {
@@ -637,13 +638,14 @@ class AuditChecklistController extends Controller
 
     public function AuditChecklistAnswerStore(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(),[
             "dataAreaId" => "nullable",
             "audit_uid" => "required",
             "question_uid" => "required",
-            "data.*.question_detail_uid" => "required",
-            "data.*.answer" => "required",
-            "data.*.answer_description" => "required",
+            "details.*.id" => "required",
+            "details.*.answer" => "required",
+            "details.*.answer_description" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -653,14 +655,19 @@ class AuditChecklistController extends Controller
         DB::beginTransaction();  
         try {
             
-            // $model = new AuditChecklistAnswerModel;
-            // $model->dataAreaId     = $request->dataAreaId;
-            // $model->audit_uid     = $request->audit_uid;
-            // $model->question_uid     = $request->question_uid;
-            // $model->question_detail_uid     = $request->question_detail_uid;
-            // $model->answer     = $request->answer;
-            // $model->answer_description     = $request->answer_description;
-            // $model->save();
+            foreach ($request->details as $key => $value) {
+
+                AuditChecklistAnswerModel::updateOrCreate([
+                    'dataAreaId'          => $request->dataAreaId ?? null,
+                    'audit_uid'           => $request->audit_uid,
+                    'question_uid'        => $request->question_uid,
+                    'question_detail_uid' => $value['id'],
+                ],[ 
+                    'answer'              => $value['answer'],
+                    'answer_description'  => $value['answer_description'],
+                ]);
+               
+            }            
 
             DB::commit();  
             return response()->json([
