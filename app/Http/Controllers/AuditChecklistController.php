@@ -644,8 +644,8 @@ class AuditChecklistController extends Controller
             "audit_uid" => "required",
             "question_uid" => "required",
             "details.*.id" => "required",
-            "details.*.answer" => "required",
-            "details.*.answer_description" => "required",
+            "details.*.answer" => "nullable",
+            "details.*.answer_description" => "nullable",
         ]);
 
         if ($validator->fails()) {
@@ -689,4 +689,37 @@ class AuditChecklistController extends Controller
         }
     }
 
+    public function getAuditChecklistAnswer(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "required",
+            "question_uid" => "required"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $model = AuditChecklistAnswerModel::where('audit_uid', $request->audit_uid)->where('question_uid', $request->question_uid)->get();          
+        // dd($model->count());
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            
+            $data_array[$key]['audit_uid'] = $value->audit_uid;
+            $data_array[$key]['question_uid'] = $value->question_uid;
+            $data_array[$key]['question_detail_uid'] = $value->question_detail_uid;
+            $data_array[$key]['answer'] = $value->answer ;
+            $data_array[$key]['answer_description'] = $value->answer_description ;
+        } 
+
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
 }
