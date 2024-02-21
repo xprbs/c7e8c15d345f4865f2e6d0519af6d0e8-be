@@ -91,6 +91,7 @@ class AuditChecklistController extends Controller
             'audit_category' => 'required',
             'audit_location' => 'required',
             'question_uid' => 'required',
+            'company' => 'required',
         ]);
 
         if($validator->fails()){
@@ -102,6 +103,7 @@ class AuditChecklistController extends Controller
         try {
 
             $model = new AuditChecklistModel;
+            $model->dataAreaId = $request->company;
             $model->audit_name = $request->audit_name;
             $model->audit_ref = $request->audit_ref;
             $model->audit_category = $request->audit_category;

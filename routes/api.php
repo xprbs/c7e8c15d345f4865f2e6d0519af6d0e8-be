@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebMasterDataController;
 use App\Http\Controllers\WebTransactionController;
 use App\Http\Controllers\AuditChecklistController;
+use App\Http\Controllers\CompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-question', [AuditChecklistController::class, 'getQuestion']);
             Route::post('/get-audit-category', [AuditChecklistController::class, 'getAuditCategory']);
             Route::post('/get-audit-category-ref', [AuditChecklistController::class, 'getAuditCategoryRef']);
+            Route::post('/get-company', [CompanyController::class, 'getCompany']);
             
             Route::group(['prefix' => 'question-template'], function () {
                 Route::post('/list', [AuditChecklistController::class, 'questionTemplateList']);
@@ -76,6 +78,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/list', [AuditChecklistController::class, 'auditCategoryList']);
                 Route::post('/store', [AuditChecklistController::class, 'auditCategoryStore']);
                 Route::post('/delete', [AuditChecklistController::class, 'auditCategoryDelete']);
+            });
+
+            Route::group(['prefix' => 'company'], function () {
             });
 
         });
