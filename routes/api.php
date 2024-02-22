@@ -7,6 +7,8 @@ use App\Http\Controllers\WebMasterDataController;
 use App\Http\Controllers\WebTransactionController;
 use App\Http\Controllers\AuditChecklistController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AuditCategoryController;
+use App\Http\Controllers\QuestionTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,19 +67,19 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-company', [CompanyController::class, 'getCompany']);
             
             Route::group(['prefix' => 'question-template'], function () {
-                Route::post('/list', [AuditChecklistController::class, 'questionTemplateList']);
-                Route::post('/store', [AuditChecklistController::class, 'questionTemplateStore']);
-                Route::post('/get-detail', [AuditChecklistController::class, 'questionGetDetail']);
-                Route::post('/question-detail-store', [AuditChecklistController::class, 'questionDetailStore']);
-                Route::post('/question-detail-list', [AuditChecklistController::class, 'getQuestionDetailList']);
-                Route::post('/get-master-answer', [AuditChecklistController::class, 'getMasterAnswer']);
-                Route::post('/get-master-answer-id', [AuditChecklistController::class, 'getMasterAnswerId']);
+                Route::post('/list', [QuestionTemplateController::class, 'questionTemplateList']);
+                Route::post('/store', [QuestionTemplateController::class, 'questionTemplateStore']);
+                Route::post('/get-detail', [QuestionTemplateController::class, 'questionGetDetail']);
+                Route::post('/question-detail-store', [QuestionTemplateController::class, 'questionDetailStore']);
+                Route::post('/question-detail-list', [QuestionTemplateController::class, 'getQuestionDetailList']);
+                Route::post('/get-master-answer', [QuestionTemplateController::class, 'getMasterAnswer']);
+                Route::post('/get-master-answer-id', [QuestionTemplateController::class, 'getMasterAnswerId']);
             });
 
             Route::group(['prefix' => 'audit-category'], function () {
-                Route::post('/list', [AuditChecklistController::class, 'auditCategoryList']);
-                Route::post('/store', [AuditChecklistController::class, 'auditCategoryStore']);
-                Route::post('/delete', [AuditChecklistController::class, 'auditCategoryDelete']);
+                Route::post('/list', [AuditCategoryController::class, 'auditCategoryList']);
+                Route::post('/store', [AuditCategoryController::class, 'auditCategoryStore']);
+                Route::post('/delete', [AuditCategoryController::class, 'auditCategoryDelete']);
             });
             
             Route::group(['prefix' => 'company'], function () {

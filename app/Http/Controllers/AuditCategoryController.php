@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Auth, Validator, DB, Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Database\QueryException;
+
+use App\Helper\WebHelper;
+
+use App\Models\MasterData;
+
+class AuditCategoryController extends Controller
+{
+    public function auditCategoryStore(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_category" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try {
+            
+            $model = new MasterData;
+            $model->key1 = $request->audit_category;
+            $model->value1 = $request->audit_category;
+            $model->doc_type = 'AUDIT_CATEGORY';
+            $model->save();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+            ], 200);
+
+        } catch (Exception $e) {
+
+
+            $error = [
+                'request' => json_decode($e),
+                'response' => json_decode($e)
+            ];
+
+            return response()->json($error, 500);
+        }
+
+    }
+
+    public function auditCategoryList(Request $request)
+    {
+        $params = $request->filterData ;
+
+        if($request->limit == null OR $request->limit == ""){
+            $limit = 10 ;
+        }else{
+            $limit = $request->limit ;
+        }
+
+        if($request->sort == null OR $request->sort == ""){
+            $sortColumn = 'id' ;
+            $sortType = 'DESC' ;
+        }else{
+            $sort = $request->sort[0] ;
+            $sortColumn = $sort['field'] ;
+            $sortType = $sort['sort'] ;
+        }
+
+        $model = MasterData::orderBy($sortColumn,$sortType)
+                            ->where('doc_type','AUDIT_CATEGORY')
+                            ->Where('value1', 'LIKE', '%'.$params.'%')
+                            ->paginate($limit);
+
+        $data_master = [] ;
+
+        foreach ($model as $key => $value) {
+            // dd($value);
+            $data_master[$key]['id']          = ($model->currentPage()-1) * $model->perPage() + $key + 1 ;
+            $data_master[$key]['row_id']          = $value->id ;
+            $data_master[$key]['key1']          = $value->key1 ;
+            $data_master[$key]['value1']          = $value->value1 ;
+        }
+        
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_master,
+            'firstItem' => $model->firstItem(),
+            'lastItem' => $model->lastItem(),
+            'perPage' => $model->perPage(),
+            'lastPage' => $model->lastPage(),
+            'total' => $model->total(),
+            'previousPageUrl' => $model->previousPageUrl(),
+            'currentPage' => $model->currentPage(),
+            'nextPageUrl' => $model->nextPageUrl(),
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function auditCategoryDelete(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "row_id" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try {
+            
+            MasterData::where('id', $request->row_id)->delete();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+            ], 200);
+
+        } catch (Exception $e) {
+
+
+            $error = [
+                'request' => json_decode($e),
+                'response' => json_decode($e)
+            ];
+
+            return response()->json($error, 500);
+        }
+
+    }
+
+}
