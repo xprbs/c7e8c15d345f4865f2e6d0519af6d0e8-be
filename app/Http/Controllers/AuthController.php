@@ -90,6 +90,7 @@ class AuthController extends Controller
             // 'email' => auth()->user()->email,
             // 'user_uid' => auth()->user()->user_uid,
             'role' => $UserHasRolesModel->roleName->role_name ?? null,
+            'entity' => auth()->user()->entity_uid,
         ];
 
         return response()->json([

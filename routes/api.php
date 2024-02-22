@@ -79,8 +79,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/store', [AuditChecklistController::class, 'auditCategoryStore']);
                 Route::post('/delete', [AuditChecklistController::class, 'auditCategoryDelete']);
             });
-
+            
             Route::group(['prefix' => 'company'], function () {
+                Route::post('/list', [CompanyController::class, 'companyList']);
+                Route::post('/store', [CompanyController::class, 'companyStore']);
+                Route::post('/delete', [CompanyController::class, 'companyDelete']);
             });
 
         });
