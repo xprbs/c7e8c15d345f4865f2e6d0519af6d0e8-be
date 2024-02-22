@@ -59,12 +59,15 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/list-role', [WebMasterDataController::class, 'listRole']);
             Route::post('/user-change-password', [WebMasterDataController::class, 'userChangePassword']);
 
-            // Master Data Audit Checklist
-            Route::post('/get-dept', [AuditChecklistController::class, 'getDept']);
-            Route::post('/get-question', [AuditChecklistController::class, 'getQuestion']);
-            Route::post('/get-audit-category', [AuditChecklistController::class, 'getAuditCategory']);
-            Route::post('/get-audit-category-ref', [AuditChecklistController::class, 'getAuditCategoryRef']);
+            // GET DROPDOWN
+            // Question
+            Route::post('/get-question', [QuestionTemplateController::class, 'getQuestion']);
+            // Audit Category
+            Route::post('/get-audit-category', [AuditCategoryController::class, 'getAuditCategory']);
+            Route::post('/get-audit-category-ref', [AuditCategoryController::class, 'getAuditCategoryRef']);
+            // Organization
             Route::post('/get-company', [CompanyController::class, 'getCompany']);
+            Route::post('/get-dept', [CompanyController::class, 'getDept']);
             
             Route::group(['prefix' => 'question-template'], function () {
                 Route::post('/list', [QuestionTemplateController::class, 'questionTemplateList']);

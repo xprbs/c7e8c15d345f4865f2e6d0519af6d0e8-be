@@ -16,6 +16,7 @@ use Illuminate\Database\QueryException;
 use App\Helper\WebHelper;
 
 use App\Models\CompanyModel;
+use App\Models\OrganizationModels;
 
 class CompanyController extends Controller
 {
@@ -168,5 +169,27 @@ class CompanyController extends Controller
 
             return response()->json($error, 500);
         }
+    }
+    
+    public function getDept(){
+
+        $model = OrganizationModels::where('unit_level','DEPT')
+                            ->orderBy('unit_description','ASC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->unit_code;
+            $data_array[$key]['label'] = $value->unit_description;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
     }
 }

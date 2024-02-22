@@ -15,11 +15,6 @@ use Illuminate\Database\QueryException;
 
 use App\Helper\WebHelper;
 use App\Models\AuditChecklistModel;
-use App\Models\OrganizationModels;
-use App\Models\MasterQuestionModel;
-use App\Models\MasterQuestionDetailModel;
-use App\Models\MasterData;
-use App\Models\MasterAnswerModel;
 use App\Models\AuditChecklistAnswerModel;
 
 class AuditChecklistController extends Controller
@@ -178,94 +173,6 @@ class AuditChecklistController extends Controller
 
             return response()->json($error, 500);
         }
-    }
-
-    public function getDept(){
-
-        $model = OrganizationModels::where('unit_level','DEPT')
-                            ->orderBy('unit_description','ASC')
-                            ->get();
-
-        $data_array = [];
-
-        foreach ($model as $key => $value) {
-            $data_array[$key]['id'] = $value->unit_code;
-            $data_array[$key]['label'] = $value->unit_description;
-        }                    
-       
-        $success = [
-            'code' => 200,
-            'message' => 'Successfully get data',
-            'data' => $data_array,
-        ];
-
-        return response()->json($success, 200);
-    }
-
-    public function getQuestion(){
-
-        $model = MasterQuestionModel::orderBy('id','DESC')
-                            ->get();
-
-        $data_array = [];
-
-        foreach ($model as $key => $value) {
-            $data_array[$key]['id'] = $value->question_uid;
-            $data_array[$key]['label'] = $value->question_name;
-        }                    
-       
-        $success = [
-            'code' => 200,
-            'message' => 'Successfully get data',
-            'data' => $data_array,
-        ];
-
-        return response()->json($success, 200);
-    }
-
-    public function getAuditCategory(){
-
-        $model = MasterData::where('doc_type','AUDIT_CATEGORY')
-                            ->orderBy('value1','ASC')
-                            ->get();
-
-        $data_array = [];
-
-        foreach ($model as $key => $value) {
-            $data_array[$key]['id'] = $value->key1;
-            $data_array[$key]['label'] = $value->value1;
-        }                    
-       
-        $success = [
-            'code' => 200,
-            'message' => 'Successfully get data',
-            'data' => $data_array,
-        ];
-
-        return response()->json($success, 200);
-    }
-
-    public function getAuditCategoryRef(Request $request){
-
-        $model = MasterData::where('doc_type','AUDIT_CATEGORY_REF')
-                            ->where('key2', $request->key2 )
-                            ->orderBy('value1','ASC')
-                            ->get();
-
-        $data_array = [];
-
-        foreach ($model as $key => $value) {
-            $data_array[$key]['id'] = $value->key1;
-            $data_array[$key]['label'] = $value->value1;
-        }                    
-       
-        $success = [
-            'code' => 200,
-            'message' => 'Successfully get data',
-            'data' => $data_array,
-        ];
-
-        return response()->json($success, 200);
     }
 
     public function AuditChecklistAnswerStore(Request $request)
