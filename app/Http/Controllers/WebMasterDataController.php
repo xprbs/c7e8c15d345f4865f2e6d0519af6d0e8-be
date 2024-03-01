@@ -21,6 +21,7 @@ use App\Models\WEB\MenusModel;
 use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\WEB\RoleHasMenusModel;
+use App\Models\WEB\UserHasCompanyModel;
 use App\Models\User;
 use App\Models\MasterData;
 
@@ -548,11 +549,14 @@ class WebMasterDataController extends Controller
             $sortType = $sort['sort'] ;
         }
 
-        $model = User::orderBy($sortColumn,$sortType)
-                                ->orWhere('name', 'LIKE', '%'.$params.'%')
-                                ->orWhere('username', 'LIKE', '%'.$params.'%')
-                                ->orWhere('email', 'LIKE', '%'.$params.'%')
-                                ->paginate($limit);
+        $model = User::where('entity_uid', Auth::user()->entity_uid)
+                        ->where(function($query) use ($params) {
+                            $query->orWhere('name', 'LIKE', '%'.$params.'%')
+                                    ->orWhere('username', 'LIKE', '%'.$params.'%')
+                                    ->orWhere('email', 'LIKE', '%'.$params.'%');
+                        })
+                        ->orderBy($sortColumn,$sortType)
+                        ->paginate($limit);
 
         $data_master = [] ;
 
@@ -643,6 +647,7 @@ class WebMasterDataController extends Controller
             $user->name = $request->name ;
             $user->username = $request->username ;
             $user->email = $request->email ;
+            $user->entity_uid = Auth::user()->entity_uid ;
             $user->password = bcrypt($request->password) ;
             $user->save();
             $user_uid = $user->user_uid ;
@@ -656,6 +661,21 @@ class WebMasterDataController extends Controller
                         'role_uid' => $request->role_uid
                     ]
                 );                    
+            }
+
+            if($request->checked){
+                foreach ($request->checked as $key => $value) {
+                    
+                    UserHasCompanyModel::updateOrCreate(
+                        [
+                            'user_uid' => $user_uid,
+                            'company_uid' => $value,
+                        ],
+                        [
+                            "status" => 1
+                        ]
+                    );
+                }                    
             }
             
             DB::commit();
@@ -712,6 +732,23 @@ class WebMasterDataController extends Controller
                     'role_uid' => $request->role_uid
                 ]
             );
+
+            UserHasCompanyModel::where('user_uid', $userData->user_uid)->forceDelete();
+
+            if($request->checked){
+                foreach ($request->checked as $key => $value) {
+                    
+                    UserHasCompanyModel::updateOrCreate(
+                        [
+                            'user_uid' => $userData->user_uid,
+                            'company_uid' => $value,
+                        ],
+                        [
+                            "status" => 1
+                        ]
+                    );
+                }                    
+            }
             
             DB::commit();
 
@@ -760,8 +797,10 @@ class WebMasterDataController extends Controller
         try {
            
             $UserHasRolesModel = UserHasRolesModel::where('user_uid', $request->user_uid)->first();
+            $userHasCompany = UserHasCompanyModel::where('user_uid', $request->user_uid)->get()->toArray();
             $userData = User::where('user_uid', $request->user_uid)->first();
             $userData->role_uid = $UserHasRolesModel->role_uid ?? null;
+            $userData->company_access = $userHasCompany ?? null;
 
             DB::commit();
 

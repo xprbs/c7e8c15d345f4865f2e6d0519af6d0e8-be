@@ -67,6 +67,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-audit-category-ref', [AuditCategoryController::class, 'getAuditCategoryRef']);
             // Organization
             Route::post('/get-company', [CompanyController::class, 'getCompany']);
+            Route::post('/get-company-trans', [CompanyController::class, 'getCompanyTrans']);
             Route::post('/get-dept', [CompanyController::class, 'getDept']);
             
             Route::group(['prefix' => 'question-template'], function () {

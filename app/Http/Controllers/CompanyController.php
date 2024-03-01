@@ -17,6 +17,7 @@ use App\Helper\WebHelper;
 
 use App\Models\CompanyModel;
 use App\Models\OrganizationModels;
+use App\Models\WEB\UserHasCompanyModel;
 
 class CompanyController extends Controller
 {
@@ -182,6 +183,29 @@ class CompanyController extends Controller
         foreach ($model as $key => $value) {
             $data_array[$key]['id'] = $value->dataAreaId;
             $data_array[$key]['label'] = $value->dataAreaName;
+            $data_array[$key]['company_uid'] = $value->company_uid;
+        }  
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+    
+    public function getCompanyTrans(Request $request)
+    {
+        
+        $company = UserHasCompanyModel::where('user_uid', Auth::user()->user_uid)->get();
+
+        $data_array = [];
+
+        foreach ($company as $key => $value) {
+            $data_array[$key]['id'] = $value->company->dataAreaId;
+            $data_array[$key]['label'] = $value->company->dataAreaName;
+            $data_array[$key]['company_uid'] = $value->company->company_uid;
         }  
        
         $success = [

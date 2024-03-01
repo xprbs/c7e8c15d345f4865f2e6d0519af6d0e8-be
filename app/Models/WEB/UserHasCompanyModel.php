@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Auth;
+use App\Models\CompanyModel;
 
-class RolesModel extends Model
+class UserHasCompanyModel extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'roles' ;
+    protected $table = 'user_has_company' ;
     protected $guarded = [];
 
     public static function boot() {
@@ -24,9 +25,13 @@ class RolesModel extends Model
             $builder->where('entity_uid', Auth::user()->entity_uid);
         });
     
-        static::creating(function (RolesModel $item) {
-            $item->role_uid = (string)Str::uuid() ; //assigning value     
-            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity             
+        static::creating(function (UserHasCompanyModel $item) {
+            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity            
         });
+    }
+
+    public function company()
+    {
+        return $this->hasOne(CompanyModel::class,'company_uid','company_uid');
     }
 }
