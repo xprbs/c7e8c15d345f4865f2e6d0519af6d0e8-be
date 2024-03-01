@@ -20,28 +20,6 @@ use App\Models\OrganizationModels;
 
 class CompanyController extends Controller
 {
-    public function getCompany(Request $request)
-    {
-
-        $model = CompanyModel::orderBy('dataAreaName','ASC')
-                            ->get();
-
-        $data_array = [];
-
-        foreach ($model as $key => $value) {
-            $data_array[$key]['id'] = $value->dataAreaId;
-            $data_array[$key]['label'] = $value->dataAreaName;
-        }  
-       
-        $success = [
-            'code' => 200,
-            'message' => 'Successfully get data',
-            'data' => $data_array,
-        ];
-
-        return response()->json($success, 200);
-    }
-
     public function companyList(Request $request)
     {
 
@@ -183,6 +161,28 @@ class CompanyController extends Controller
             $data_array[$key]['id'] = $value->unit_code;
             $data_array[$key]['label'] = $value->unit_description;
         }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+    
+    public function getCompany(Request $request)
+    {
+
+        $model = CompanyModel::orderBy('dataAreaName','ASC')
+                            ->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->dataAreaId;
+            $data_array[$key]['label'] = $value->dataAreaName;
+        }  
        
         $success = [
             'code' => 200,
