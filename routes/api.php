@@ -9,6 +9,8 @@ use App\Http\Controllers\AuditChecklistController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuditCategoryController;
 use App\Http\Controllers\QuestionTemplateController;
+use App\Http\Controllers\SurveillanceController;
+use App\Http\Controllers\CustomFieldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +94,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/delete', [CompanyController::class, 'companyDelete']);
             });
 
+            Route::group(['prefix' => 'custom-field'], function () {
+                Route::post('/get', [CustomFieldController::class, 'customGet']);
+                Route::post('/store', [CustomFieldController::class, 'customStore']);
+            });
+
         });
         
         Route::post('/user-access', [WebTransactionController::class, 'USER_ACCESS']);
@@ -104,7 +111,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/answer-store', [AuditChecklistController::class, 'AuditChecklistAnswerStore']);
             Route::post('/get-answer', [AuditChecklistController::class, 'getAuditChecklistAnswer']);
         });
-
+        
+        Route::group(['prefix' => 'surveillance'], function () {
+            Route::post('/list', [SurveillanceController::class, 'surveillanceList']);
+            Route::post('/store', [SurveillanceController::class, 'surveillanceStore']);
+        });
     });
     
 });

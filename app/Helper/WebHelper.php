@@ -20,6 +20,7 @@ use App\Models\WEB\UserHasRolesModel;
 use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\AuditChecklistModel;
 use App\Models\MasterQuestionModel;
+use App\Models\Surveillance;
 
 class WebHelper
 {
@@ -117,6 +118,25 @@ class WebHelper
 
         if($lastest){
             $last = Str::substr($lastest->question_number,-7);
+            $tambah = $last + 1 ;
+            $padded = Str::padLeft($tambah, 7, '0');
+        }else{
+            
+            $padded = '0000001' ;
+        }
+
+        return $PREFIX.$padded;
+    }
+
+    public static function GENERATE_PROJECT_NUMBER()
+    {
+        // Question Template Generate Number
+        $lastest = Surveillance::orderBy('id','DESC')->first();
+
+        $PREFIX = 'SV#';
+
+        if($lastest){
+            $last = Str::substr($lastest->project_number,-7);
             $tambah = $last + 1 ;
             $padded = Str::padLeft($tambah, 7, '0');
         }else{
