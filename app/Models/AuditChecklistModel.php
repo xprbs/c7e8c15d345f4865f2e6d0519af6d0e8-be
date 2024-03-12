@@ -45,12 +45,12 @@ class AuditChecklistModel extends Model
 
     public function auditor() 
     {
-        return $this->hasMany(AuditChecklistAuditorModel::class,"question_uid","question_uid");
+        return $this->hasMany(AuditChecklistAuditorModel::class,"audit_uid","audit_uid");
     }
 
     public function auditee() 
     {
-        return $this->hasMany(AuditChecklistAuditeeModel::class,"question_uid","question_uid");
+        return $this->hasMany(AuditChecklistAuditeeModel::class,"audit_uid","audit_uid");
     }
 
 }

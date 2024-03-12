@@ -189,8 +189,8 @@ class AuditChecklistController extends Controller
                 $data_master['audit_location']          = $value->dept['unit_description'] ;
                 $data_master['question_uid']          = $value->question_uid ;
                 $data_master['question_name']          = $value->question->question_name ;
-                $data_master['auditor']          = $value->question->question_name ;
-                $data_master['auditee']          = $value->question->question_name ;
+                $data_master['auditor']          = $value->auditor ;
+                $data_master['auditee']          = $value->auditee ;
             }
         
             
