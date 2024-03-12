@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use App\Models\OrganizationModels;
 use App\Models\CompanyModel;
 use App\Models\MasterQuestionModel;
+use App\Models\AuditChecklistAuditeeModel;
+use App\Models\AuditChecklistAuditorModel;
 
 class AuditChecklistModel extends Model
 {
@@ -39,6 +41,16 @@ class AuditChecklistModel extends Model
     public function question() 
     {
         return $this->hasOne(MasterQuestionModel::class,"question_uid","question_uid");
+    }
+
+    public function auditor() 
+    {
+        return $this->hasMany(AuditChecklistAuditorModel::class,"question_uid","question_uid");
+    }
+
+    public function auditee() 
+    {
+        return $this->hasMany(AuditChecklistAuditeeModel::class,"question_uid","question_uid");
     }
 
 }

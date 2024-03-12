@@ -117,14 +117,12 @@ class AuditChecklistController extends Controller
 
             foreach ($request->auditor as $key => $value) {
 
-                AuditChecklistAuditorModel::updateOrCreate(
+                AuditChecklistAuditorModel::create(
                         [
                             "dataAreaId" => $request->company,
                             "audit_uid" => $model->audit_uid,
                             "auditor_uid" => $value['auditor_uid'],
                             "auditor_name" => $value['auditor_name'],
-                        ],
-                        [
                             "auditor_type" => $value['auditor_type'],
                         ]
                     );
@@ -132,14 +130,12 @@ class AuditChecklistController extends Controller
 
             foreach ($request->auditee as $key => $value) {
 
-                AuditChecklistAuditeeModel::updateOrCreate(
+                AuditChecklistAuditeeModel::create(
                         [
                             "dataAreaId" => $request->company,
                             "audit_uid" => $model->audit_uid,
                             "auditee_uid" => $value['auditee_uid'],
                             "auditee_name" => $value['auditee_name'],
-                        ],
-                        [
                             "auditee_type" => $value['auditee_type'],
                         ]
                     );
@@ -193,6 +189,8 @@ class AuditChecklistController extends Controller
                 $data_master['audit_location']          = $value->dept['unit_description'] ;
                 $data_master['question_uid']          = $value->question_uid ;
                 $data_master['question_name']          = $value->question->question_name ;
+                $data_master['auditor']          = $value->question->question_name ;
+                $data_master['auditee']          = $value->question->question_name ;
             }
         
             

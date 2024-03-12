@@ -1043,4 +1043,48 @@ class WebMasterDataController extends Controller
 
     }
 
+    public function getAuditor()
+    {
+        $model = MasterData::where('doc_type','IS_AUDITOR')->get();
+
+        // dd($model);
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->auditor->user_uid;
+            $data_array[$key]['label'] = $value->auditor->name;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data Auditor',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getAuditee()
+    {
+        $model = MasterData::where('doc_type','IS_AUDITEE')->get();
+
+        // dd($model);
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->auditee->user_uid;
+            $data_array[$key]['label'] = $value->auditee->name;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data Auditee',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
 }

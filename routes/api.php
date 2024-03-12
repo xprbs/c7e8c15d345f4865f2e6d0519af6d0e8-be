@@ -71,6 +71,8 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-company', [CompanyController::class, 'getCompany']);
             Route::post('/get-company-trans', [CompanyController::class, 'getCompanyTrans']);
             Route::post('/get-dept', [CompanyController::class, 'getDept']);
+            Route::post('/get-auditor', [WebMasterDataController::class, 'getAuditor']);
+            Route::post('/get-auditee', [WebMasterDataController::class, 'getAuditee']);
             
             Route::group(['prefix' => 'question-template'], function () {
                 Route::post('/list', [QuestionTemplateController::class, 'questionTemplateList']);
