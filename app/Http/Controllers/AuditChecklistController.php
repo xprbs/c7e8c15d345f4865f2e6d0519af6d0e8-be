@@ -16,6 +16,8 @@ use Illuminate\Database\QueryException;
 use App\Helper\WebHelper;
 use App\Models\AuditChecklistModel;
 use App\Models\AuditChecklistAnswerModel;
+use App\Models\AuditChecklistAuditorModel;
+use App\Models\AuditChecklistAuditeeModel;
 
 class AuditChecklistController extends Controller
 {
@@ -87,6 +89,12 @@ class AuditChecklistController extends Controller
             'audit_location' => 'required',
             'question_uid' => 'required',
             'company' => 'required',
+            'auditor.*.auditor_uid' => "required",
+            'auditor.*.auditor_name' => "required",
+            'auditor.*.auditor_type' => "nullable",
+            'auditee.*.auditee_uid' => "required",
+            'auditee.*.auditee_name' => "required",
+            'auditee.*.auditee_type' => "nullable",
         ]);
 
         if($validator->fails()){
@@ -106,6 +114,36 @@ class AuditChecklistController extends Controller
             $model->question_uid = $request->question_uid;
             $model->audit_number = WebHelper::GENERATE_AUDIT_NUMBER();
             $model->save();
+
+            foreach ($request->auditor as $key => $value) {
+
+                AuditChecklistAuditorModel::updateOrCreate(
+                        [
+                            "dataAreaId" => $request->company,
+                            "audit_uid" => $model->audit_uid,
+                            "auditor_uid" => $value['auditor_uid'],
+                            "auditor_name" => $value['auditor_name'],
+                        ],
+                        [
+                            "auditor_type" => $value['auditor_type'],
+                        ]
+                    );
+            }
+
+            foreach ($request->auditee as $key => $value) {
+
+                AuditChecklistAuditeeModel::updateOrCreate(
+                        [
+                            "dataAreaId" => $request->company,
+                            "audit_uid" => $model->audit_uid,
+                            "auditee_uid" => $value['auditee_uid'],
+                            "auditee_name" => $value['auditee_name'],
+                        ],
+                        [
+                            "auditee_type" => $value['auditee_type'],
+                        ]
+                    );
+            }
 
             DB::commit();
             return response()->json([
