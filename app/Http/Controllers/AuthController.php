@@ -7,6 +7,7 @@ use App\Models\User;
 use Validator, DB, Config, Str;
 use Carbon\Carbon;
 use App\Models\WEB\UserHasRolesModel;
+use App\Rules\MatchOldPassword;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,6 @@ class AuthController extends Controller
 
         return $this->createNewToken($token);
     }
-
     
     public function register(Request $request){
         $validator = Validator::make($request->all(), [
@@ -103,5 +103,46 @@ class AuthController extends Controller
         ]);
     }
 
+    public function userChangePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(),
+        [
+            'current_password' => ['required', new MatchOldPassword],
+            'new_password' => 'required|string|min:6',
+            'new_confirm_password' => ['same:new_password'],
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(),400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            User::where('user_uid', Auth::user()->user_uid)->update([
+                'password' => bcrypt($request->new_password)
+            ]);
+
+            DB::commit();
+            $success = [
+                'code' => '200',
+                'message' => 'Successfully change password'
+            ];
+
+            return response()->json($success, 200);
+
+        }catch(Exception $e){
+            DB::rollback();
+
+            $error = [
+                'code' => '500',
+                'request' => $request->all(),
+                'response' => $e->getMessage(),
+            ];
+
+            return response()->json($error, 500);
+        }   
+    }
 
 }
