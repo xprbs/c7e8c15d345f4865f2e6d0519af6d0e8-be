@@ -1047,8 +1047,6 @@ class WebMasterDataController extends Controller
     {
         $model = MasterData::where('doc_type','IS_AUDITOR')->get();
 
-        // dd($model);
-
         $data_array = [];
 
         foreach ($model as $key => $value) {
@@ -1069,8 +1067,6 @@ class WebMasterDataController extends Controller
     {
         $model = MasterData::where('doc_type','IS_AUDITEE')->get();
 
-        // dd($model);
-
         $data_array = [];
 
         foreach ($model as $key => $value) {
@@ -1081,6 +1077,46 @@ class WebMasterDataController extends Controller
         $success = [
             'code' => 200,
             'message' => 'Successfully get data Auditee',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getAuditorType()
+    {
+        $model = MasterData::where('doc_type','AUDITOR_TYPE')->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->key1;
+            $data_array[$key]['label'] = $value->value1;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data Auditor Type',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getAuditeeType()
+    {
+        $model = MasterData::where('doc_type','AUDITEE_TYPE')->get();
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            $data_array[$key]['id'] = $value->key1;
+            $data_array[$key]['label'] = $value->value1;
+        }                    
+       
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data Auditee Type',
             'data' => $data_array,
         ];
 
