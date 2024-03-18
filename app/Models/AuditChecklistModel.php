@@ -20,6 +20,15 @@ class AuditChecklistModel extends Model
     protected $table = 'audit_checklist' ;
     protected $guarded = [];
 
+    public const STATUS = [ 
+        0 => 'Created', 
+        10 => 'Drafted', 
+        11 => 'Submitted', 
+        20 => 'Approved Head', 
+        21 => 'Approveed Dir', 
+        30 => 'Complete' 
+    ];
+
     public static function boot() {
         parent::boot();
     

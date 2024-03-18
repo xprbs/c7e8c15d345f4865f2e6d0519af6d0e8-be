@@ -18,6 +18,8 @@ use App\Models\AuditChecklistModel;
 use App\Models\AuditChecklistAnswerModel;
 use App\Models\AuditChecklistAuditorModel;
 use App\Models\AuditChecklistAuditeeModel;
+use App\Models\WorkflowHistory;
+use App\Models\Workflow;
 
 class AuditChecklistController extends Controller
 {
@@ -60,6 +62,8 @@ class AuditChecklistController extends Controller
             $data_master[$key]['audit_name']          = $value->audit_name ;
             $data_master[$key]['audit_location']          = $value->dept['unit_description'] ;
             $data_master[$key]['question_uid']          = $value->question->question_name ;
+            $data_master[$key]['status']          = $value->status ?? 0;
+            $data_master[$key]['status_name']          = AuditChecklistModel::STATUS[$value->status ?? 0];
         }
         
         $success = [
@@ -112,6 +116,7 @@ class AuditChecklistController extends Controller
             $model->audit_category = $request->audit_category;
             $model->audit_location = $request->audit_location;
             $model->question_uid = $request->question_uid;
+            $model->status = 0 ;
             $model->audit_number = WebHelper::GENERATE_AUDIT_NUMBER();
             $model->save();
 
@@ -219,6 +224,7 @@ class AuditChecklistController extends Controller
             "dataAreaId" => "nullable",
             "audit_uid" => "required",
             "question_uid" => "required",
+            "is_submit" => "required", // 1 submit // 0 Draft
             "details.*.id" => "required",
             "details.*.answer" => "nullable",
             "details.*.answer_description" => "nullable",
@@ -231,6 +237,10 @@ class AuditChecklistController extends Controller
         DB::beginTransaction();  
         try {
             
+            AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
+                "status" => $request->is_submit == 1 ? 11 : 10 
+            ]);
+
             foreach ($request->details as $key => $value) {
 
                 AuditChecklistAnswerModel::updateOrCreate([
@@ -244,6 +254,24 @@ class AuditChecklistController extends Controller
                 ]);
                
             }            
+
+            if ($request->is_submit == 1) {
+                
+                $model = Workflow::where('doc_type','AUDIT_APPROVAL')->get();  
+                
+                foreach ($model as $key2 => $value2) {
+                    
+                    $approval = new WorkflowHistory();
+                    $approval->doc_type = 'AUDIT_APPROVAL';
+                    $approval->doc_uid = $request->audit_uid;
+                    $approval->user_uid = $value2->user_uid;
+                    $approval->user_name = $value2->user->name;
+                    $approval->priority = $value2->priority;
+                    $approval->approval = $value2->priority == 1 ? 1 : 0;
+                    $approval->save();
+
+                }
+            }
 
             DB::commit();  
             return response()->json([
@@ -288,6 +316,37 @@ class AuditChecklistController extends Controller
             $data_array[$key]['question_detail_uid'] = $value->question_detail_uid;
             $data_array[$key]['answer'] = $value->answer ;
             $data_array[$key]['answer_description'] = $value->answer_description ;
+        } 
+
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+    public function getAuditApproval(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $model = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('doc_type','AUDIT_APPROVAL')->get();    
+
+        $data_array = [];
+
+        foreach ($model as $key => $value) {
+            
+            $data_array[$key]['user_name'] = $value->user_name;
+            $data_array[$key]['priority'] = $value->priority;
+            $data_array[$key]['approval'] = $value->approval;
+            $data_array[$key]['approval_name'] = WorkflowHistory::STATUS[$value->approval];
         } 
 
         $success = [
