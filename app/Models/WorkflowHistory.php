@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Auth;
+use App\Models\AuditChecklistModel;
 
 class WorkflowHistory extends Model
 {
@@ -31,5 +32,10 @@ class WorkflowHistory extends Model
         static::creating(function (WorkflowHistory $item) {
             $item->entity_uid = Auth::user()->entity_uid ; //assigning entity            
         });
+    }
+
+    public function audit()
+    {
+        return $this->hasOne(AuditChecklistModel::class,'audit_uid','doc_uid');
     }
 }

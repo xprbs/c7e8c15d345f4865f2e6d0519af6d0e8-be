@@ -337,7 +337,7 @@ class AuditChecklistController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $model = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('doc_type','AUDIT_APPROVAL')->get();    
+        $model = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('doc_type','AUDIT_APPROVAL')->orderBy('priority','ASC')->get();    
 
         $data_array = [];
 

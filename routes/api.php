@@ -11,6 +11,7 @@ use App\Http\Controllers\AuditCategoryController;
 use App\Http\Controllers\QuestionTemplateController;
 use App\Http\Controllers\SurveillanceController;
 use App\Http\Controllers\CustomFieldController;
+use App\Http\Controllers\ApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,6 +119,10 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/get-approval', [AuditChecklistController::class, 'getAuditApproval']);
         });
         
+        Route::group(['prefix' => 'approval'], function () {
+            Route::post('/audit', [ApprovalController::class, 'AuditApprovalList']);
+        });
+
         Route::group(['prefix' => 'surveillance'], function () {
             Route::post('/list', [SurveillanceController::class, 'surveillanceList']);
             Route::post('/store', [SurveillanceController::class, 'surveillanceStore']);
