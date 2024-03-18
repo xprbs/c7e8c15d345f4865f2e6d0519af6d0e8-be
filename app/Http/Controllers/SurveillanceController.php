@@ -130,7 +130,7 @@ class SurveillanceController extends Controller
                 $detail = new SurveillanceDetail();
                 $detail->dataAreaId = $request->dataAreaId;
                 $detail->project_uid = $model->project_uid;
-                $detail->image = $value['image'];
+                // $detail->image = $value['image'];
                 $detail->geo_location = $value['geo_location'];
                 $detail->description = $value['description'];
                 $detail->comment01 = $value['comment01'];

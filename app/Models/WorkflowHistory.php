@@ -15,6 +15,8 @@ class WorkflowHistory extends Model
     use SoftDeletes;
     use HasFactory;
 
+    protected $guarded = [];
+
     public const STATUS = [
         "0" => "Waiting",
         "1" => "On Process",

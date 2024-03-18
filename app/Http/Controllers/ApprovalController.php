@@ -77,4 +77,50 @@ class ApprovalController extends Controller
 
         return response()->json($success, 200);
     }
+
+    public function AuditApprove(request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "nullable",
+            "note" => "nullable",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try {
+            
+            $approval = WorkflowHistory::where('doc_uid', $request->audit_uid)
+                                ->where('user_uid', Auth::user()->user_uid)
+                                ->where('approval', 1)->first();
+
+            $nextPriority = $approval->priority + 1;
+
+            $approval->update([
+                "action_date" => Carbon::now(),
+                "approval" => 2,
+                "command" => $request->note
+            ]);
+
+            $nextApproval = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('priority', $nextPriority)->update([
+                "approval" => 1,
+            ]);
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully approve',
+            ], 200);
+
+        } catch (Exception $e) {
+
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
 }
