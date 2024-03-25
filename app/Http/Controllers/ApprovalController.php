@@ -38,7 +38,7 @@ class ApprovalController extends Controller
             $sortType = $sort['sort'] ;
         }
 
-        $model = WorkflowHistory::where('doc_type','AUDIT_APPROVAL')
+        $model = WorkflowHistory::whereRelation('audit','status', AuditChecklistModel::IS_WAITING_APPROVAL)->where('doc_type','AUDIT_APPROVAL')
                 ->where('user_uid', Auth::user()->user_uid )
                 ->where('approval','1')
                 ->orderBy($sortColumn,$sortType)
@@ -89,6 +89,8 @@ class ApprovalController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        DB::beginTransaction();
+
         try {
             
             $approval = WorkflowHistory::where('doc_uid', $request->audit_uid)
@@ -103,9 +105,23 @@ class ApprovalController extends Controller
                 "command" => $request->note
             ]);
 
-            $nextApproval = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('priority', $nextPriority)->update([
-                "approval" => 1,
-            ]);
+            $nextApproval = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('priority', $nextPriority)->first();
+            
+            if ($nextApproval) {
+
+                $nextApproval->update([
+                    "approval" => 1,
+                ]);
+
+            }else{
+                
+                AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
+                    "status" => 30
+                ]);
+
+            }
+            
+            DB::commit();
 
             return response()->json([
                 'code' => 200,
@@ -113,6 +129,60 @@ class ApprovalController extends Controller
             ], 200);
 
         } catch (Exception $e) {
+            
+            DB::rollback();
+
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
+    public function AuditReject(request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "nullable",
+            "note" => "nullable",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            
+            $approval = WorkflowHistory::where('doc_uid', $request->audit_uid)
+                                ->where('user_uid', Auth::user()->user_uid)
+                                ->where('approval', 1)->first();
+
+
+            $approval->update([
+                "action_date" => Carbon::now(),
+                "approval" => 3,
+                "command" => $request->note
+            ]);
+
+            AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
+                "status" => 40
+            ]);
+
+            
+            DB::commit();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully reject',
+            ], 200);
+
+        } catch (Exception $e) {
+            
+            DB::rollback();
 
             $error = [
                 'code' => 500,

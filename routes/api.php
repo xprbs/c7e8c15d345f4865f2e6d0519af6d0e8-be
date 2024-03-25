@@ -123,6 +123,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/audit', [ApprovalController::class, 'AuditApprovalList']);
             Route::post('/reject', [ApprovalController::class, 'AuditReject']);
             Route::post('/approve', [ApprovalController::class, 'AuditApprove']);
+            Route::post('/reject', [ApprovalController::class, 'AuditReject']);
         });
 
         Route::group(['prefix' => 'surveillance'], function () {

@@ -20,13 +20,15 @@ class AuditChecklistModel extends Model
     protected $table = 'audit_checklist' ;
     protected $guarded = [];
 
+    public const IS_WAITING_APPROVAL = 20 ;
+    public const IS_DRAFT = 10 ;
+
     public const STATUS = [ 
         0 => 'Created', 
         10 => 'Drafted', 
-        11 => 'Submitted', 
-        20 => 'Approved Head', 
-        21 => 'Approveed Dir', 
-        30 => 'Complete' 
+        20 => 'Waiting Approval', 
+        30 => 'Completed' ,
+        40 => 'Rejected' 
     ];
 
     public static function boot() {

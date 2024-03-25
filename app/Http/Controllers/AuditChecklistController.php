@@ -238,7 +238,7 @@ class AuditChecklistController extends Controller
         try {
             
             AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
-                "status" => $request->is_submit == 1 ? 11 : 10 
+                "status" => $request->is_submit == 1 ? AuditChecklistModel::IS_WAITING_APPROVAL : AuditChecklistModel::IS_DRAFT 
             ]);
 
             foreach ($request->details as $key => $value) {
