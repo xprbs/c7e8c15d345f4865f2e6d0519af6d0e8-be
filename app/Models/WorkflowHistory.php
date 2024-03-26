@@ -18,7 +18,7 @@ class WorkflowHistory extends Model
     protected $guarded = [];
 
     public const STATUS = [
-        "0" => "Waiting",
+        "0" => "-",
         "1" => "On Process",
         "2" => "Approve",
         "3" => "Reject"

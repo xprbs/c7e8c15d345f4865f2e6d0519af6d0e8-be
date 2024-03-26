@@ -347,6 +347,8 @@ class AuditChecklistController extends Controller
             $data_array[$key]['priority'] = $value->priority;
             $data_array[$key]['approval'] = $value->approval;
             $data_array[$key]['approval_name'] = WorkflowHistory::STATUS[$value->approval];
+            $data_array[$key]['action_date'] = $value->action_date == null ? "-" : Carbon::parse($value->action_date)->format('d-M-Y H:i:s');
+            $data_array[$key]['message'] = $value->command ?? "-";
         } 
 
         $success = [
