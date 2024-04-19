@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\OrganizationModels;
 
 class MasterQuestionModel extends Model
 {
@@ -21,6 +22,11 @@ class MasterQuestionModel extends Model
         static::creating(function (MasterQuestionModel $item) {
             $item->question_uid = (string)Str::uuid() ; //assigning value            
         });
+    }
+
+    public function dept() 
+    {
+        return $this->hasOne(OrganizationModels::class,"unit_code","question_dept");
     }
     
 }

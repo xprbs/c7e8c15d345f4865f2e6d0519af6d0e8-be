@@ -54,9 +54,11 @@ class QuestionTemplateController extends Controller
             $data_master[$key]['id']          = ($model->currentPage()-1) * $model->perPage() + $key + 1 ;
             $data_master[$key]['row_id']          = $value->id ;
             $data_master[$key]['dataAreaId']          = $value->dataAreaId ;
-            $data_master[$key]['question_name']          = $value->question_name ;
-            $data_master[$key]['question_type']          = $value->question_type ;
             $data_master[$key]['question_number']          = $value->question_number ;
+            $data_master[$key]['question_name']          = $value->question_name ;
+            $data_master[$key]['question_dept']          = $value->dept['unit_description'] ?? null ;
+            $data_master[$key]['question_type']          = $value->question_type ;
+            $data_master[$key]['question_ref']          = $value->question_ref ;
             $data_master[$key]['question_uid']          = $value->question_uid ;
         }
         
@@ -82,7 +84,9 @@ class QuestionTemplateController extends Controller
 
         $validator = Validator::make($request->all(),[
             'question_name' => 'required',
+            'question_dept' => 'required',
             'question_type' => 'required',
+            'question_ref' => 'required',
         ]);
 
         if($validator->fails()){
@@ -95,7 +99,9 @@ class QuestionTemplateController extends Controller
 
             $model = new MasterQuestionModel;
             $model->question_name = $request->question_name;
+            $model->question_dept = $request->question_dept;
             $model->question_type = $request->question_type;
+            $model->question_ref = $request->question_ref;
             $model->question_number = WebHelper::GENERATE_QT_NUMBER();
             $model->save();
 
