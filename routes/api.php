@@ -66,6 +66,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             // GET DROPDOWN
             // Question
             Route::post('/get-question', [QuestionTemplateController::class, 'getQuestion']);
+            Route::post('/get-question-v2', [QuestionTemplateController::class, 'getQuestionV2']);
             // Audit Category
             Route::post('/get-audit-category', [AuditCategoryController::class, 'getAuditCategory']);
             Route::post('/get-audit-category-ref', [AuditCategoryController::class, 'getAuditCategoryRef']);
