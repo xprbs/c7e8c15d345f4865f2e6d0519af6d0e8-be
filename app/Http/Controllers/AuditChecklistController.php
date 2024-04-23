@@ -56,8 +56,8 @@ class AuditChecklistController extends Controller
             $data_master[$key]['row_id']          = $value->id ;
             $data_master[$key]['dataAreaId']          = $value->dataAreaId ;
             $data_master[$key]['audit_uid']          = $value->audit_uid ;
-            $data_master[$key]['audit_category']          = $value->audit_category ;
-            $data_master[$key]['audit_ref']          = $value->audit_ref ;
+            $data_master[$key]['audit_category']          = $value->question->question_type ;
+            $data_master[$key]['audit_ref']          = $value->question->question_ref ;
             $data_master[$key]['audit_number']          = $value->audit_number ;
             $data_master[$key]['audit_name']          = $value->audit_name ;
             $data_master[$key]['audit_location']          = $value->dept['unit_description'] ;
@@ -88,8 +88,8 @@ class AuditChecklistController extends Controller
 
         $validator = Validator::make($request->all(),[
             'audit_name' => 'required',
-            'audit_ref' => 'required',
-            'audit_category' => 'required',
+            'audit_ref' => 'nullable',
+            'audit_category' => 'nullable',
             'audit_location' => 'required',
             'question_uid' => 'required',
             'company' => 'required',
