@@ -35,7 +35,8 @@ class AuditChecklistModel extends Model
         parent::boot();
     
         static::creating(function (AuditChecklistModel $item) {
-            $item->audit_uid = (string)Str::uuid() ; //assigning value            
+            $item->audit_uid = (string)Str::uuid() ; //assigning value     
+            $item->created_by = Auth::user()->user_uid ;       
         });
     }
 

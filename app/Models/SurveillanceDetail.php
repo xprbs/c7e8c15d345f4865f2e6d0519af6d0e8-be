@@ -25,7 +25,8 @@ class SurveillanceDetail extends Model
         });
 
         static::creating(function (SurveillanceDetail $item) {
-            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity            
+            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity    
+            $item->created_by = Auth::user()->user_uid ;         
         });
     }
 }

@@ -25,7 +25,8 @@ class AuditChecklistAuditeeModel extends Model
         });
 
         static::creating(function (AuditChecklistAuditeeModel $item) {
-            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity            
+            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity        
+            $item->created_by = Auth::user()->user_uid ;       
         });
     }
 }

@@ -20,7 +20,8 @@ class MasterQuestionDetailModel extends Model
         parent::boot();
     
         static::creating(function (MasterQuestionDetailModel $item) {
-            $item->question_detail_uid = (string)Str::uuid() ; //assigning value            
+            $item->question_detail_uid = (string)Str::uuid() ; //assigning value       
+            $item->created_by = Auth::user()->user_uid ;      
         });
     }
 

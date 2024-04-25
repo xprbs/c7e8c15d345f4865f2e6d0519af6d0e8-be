@@ -22,7 +22,8 @@ class Surveillance extends Model
 
         static::creating(function (Surveillance $item) {
             $item->project_uid = (string)Str::uuid() ; //assigning value            
-            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity            
+            $item->entity_uid = Auth::user()->entity_uid ; //assigning entity
+            $item->created_by = Auth::user()->user_uid ;             
         });
     }
 }
