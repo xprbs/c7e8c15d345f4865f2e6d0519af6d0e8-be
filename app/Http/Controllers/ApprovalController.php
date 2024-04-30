@@ -259,7 +259,7 @@ class ApprovalController extends Controller
             $model = NoteHistory::where('audit_uid', $request->audit_uid)
                                 ->where('question_uid', $request->question_uid)
                                 ->where('question_detail_uid', $request->question_detail_uid)
-                                ->orderBy('id','ASC')
+                                ->orderBy('id','DESC')
                                 ->get();
 
             $data_array = [] ;
