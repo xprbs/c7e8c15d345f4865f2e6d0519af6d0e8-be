@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\QueryException;
 
 use App\Models\WorkflowHistory;
+use App\Models\NoteHistory;
 use App\Models\AuditChecklistModel;
 
 class ApprovalController extends Controller
@@ -78,7 +79,7 @@ class ApprovalController extends Controller
         return response()->json($success, 200);
     }
 
-    public function AuditApprove(request $request)
+    public function AuditApprove(Request $request)
     {
         $validator = Validator::make($request->all(),[
             "audit_uid" => "nullable",
@@ -142,7 +143,7 @@ class ApprovalController extends Controller
         }
     }
 
-    public function AuditReject(request $request)
+    public function AuditReject(Request $request)
     {
         $validator = Validator::make($request->all(),[
             "audit_uid" => "nullable",
@@ -178,6 +179,107 @@ class ApprovalController extends Controller
             return response()->json([
                 'code' => 200,
                 'message' => 'Successfully reject',
+            ], 200);
+
+        } catch (Exception $e) {
+            
+            DB::rollback();
+
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
+    public function approvalNoteStore(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "required",
+            "question_uid" => "required",
+            "question_detail_uid" => "required",
+            "note" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            
+            $model = new NoteHistory;
+            $model->audit_uid = $request->audit_uid;
+            $model->question_uid = $request->question_uid;
+            $model->question_detail_uid = $request->question_detail_uid;
+            $model->note = $request->note;
+            $model->save() ;
+
+            DB::commit();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+            ], 200);
+
+        } catch (Exception $e) {
+            
+            DB::rollback();
+
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
+
+    public function approvalNoteGet(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "audit_uid" => "required",
+            "question_uid" => "required",
+            "question_detail_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            
+            $model = NoteHistory::where('audit_uid', $request->audit_uid)
+                                ->where('question_uid', $request->question_uid)
+                                ->where('question_detail_uid', $request->question_detail_uid)
+                                ->orderBy('id','ASC')
+                                ->get();
+
+            $data_array = [] ;
+
+            foreach ($model as $key => $value) {
+                $data_array[$key]['created_at']             = Carbon::parse($value->created_at)->format('d-m-Y H:i:s') ;
+                $data_array[$key]['dataAreaId']             = $value->dataAreaId ;
+                $data_array[$key]['audit_uid']              = $value->audit_uid ;
+                $data_array[$key]['question_uid']           = $value->question_uid ;
+                $data_array[$key]['question_detail_uid']    = $value->question_detail_uid ;
+                $data_array[$key]['note']                   = $value->note ;
+                $data_array[$key]['created_by']             = $value->user->name ;
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully get data',
+                'data' => $data_array
             ], 200);
 
         } catch (Exception $e) {

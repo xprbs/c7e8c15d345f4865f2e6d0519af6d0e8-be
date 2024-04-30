@@ -20,7 +20,7 @@ class CreateNoteHistoriesTable extends Migration
             $table->string('updated_by')->nullable();
             $table->softDeletes();
             $table->string('dataAreaId')->nullable();
-            $table->uuid('audit_id')->nullable(); // Audit uid
+            $table->uuid('audit_uid')->nullable(); // Audit uid
             $table->uuid('question_uid')->nullable(); // Header uid
             $table->uuid('question_detail_uid')->nullable(); // Detail uid
             $table->text('note')->nullable(); // Note

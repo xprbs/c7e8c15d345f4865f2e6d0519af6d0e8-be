@@ -21,6 +21,7 @@ use App\Models\WEB\RoleHasPermissionsModel;
 use App\Models\AuditChecklistModel;
 use App\Models\MasterQuestionModel;
 use App\Models\Surveillance;
+use App\Models\NoteHistory;
 
 class WebHelper
 {
@@ -145,5 +146,15 @@ class WebHelper
         }
 
         return $PREFIX.$padded;
+    }
+
+    public static function COUNT_NOTE($audit_uid, $question_uid, $question_detail_uid)
+    {
+        $model = NoteHistory::where('audit_uid', $audit_uid)
+                                ->where('question_uid', $question_uid)
+                                ->where('question_detail_uid', $question_detail_uid)
+                                ->count();                                
+
+        return $model ?? 0 ;
     }
 }

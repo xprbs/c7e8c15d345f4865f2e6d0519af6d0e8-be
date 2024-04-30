@@ -225,6 +225,7 @@ class QuestionTemplateController extends Controller
         foreach ($model as $key => $value) {
             
             $data_array[$key]['id'] = $value->question_answer_uid;
+            $data_array[$key]['question_uid'] = $value->question_uid;
             $data_array[$key]['question_detail_uid'] = $value->question_detail_uid;
             $data_array[$key]['question_answer_description'] = $value->question_answer_description;
             $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null ;
@@ -233,6 +234,7 @@ class QuestionTemplateController extends Controller
             $data_array[$key]['question_category1'] = $value->question_category1 ?? '-' ;
             $data_array[$key]['question_category2'] = $value->question_category2 ?? '-' ;
             $data_array[$key]['control_point'] = $value->control_point ?? null ;
+            $data_array[$key]['count_note'] = WebHelper::COUNT_NOTE($request->audit_uid, $value->question_uid, $value->question_detail_uid) ;
         } 
 
         $success = [
