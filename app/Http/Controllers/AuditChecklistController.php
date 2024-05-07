@@ -20,6 +20,7 @@ use App\Models\AuditChecklistAuditorModel;
 use App\Models\AuditChecklistAuditeeModel;
 use App\Models\WorkflowHistory;
 use App\Models\Workflow;
+use App\Models\AuditChecklistFile;
 
 class AuditChecklistController extends Controller
 {
@@ -228,7 +229,12 @@ class AuditChecklistController extends Controller
             "details.*.id" => "required",
             "details.*.answer" => "nullable",
             "details.*.answer_description" => "nullable",
+            'details.*.fileuploads.*.files' => "required|mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
         ]);
+
+        // dd($request->all());
+        // dd(is_array($request->details[0]['fileuploads'] ?? null));
+        // dd($request->hasFile("details[0]['fileuploads[0]']"));
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
@@ -252,6 +258,32 @@ class AuditChecklistController extends Controller
                     'answer'              => $value['answer'],
                     'answer_description'  => $value['answer_description'],
                 ]);
+
+                // dd($value['fileuploads']);
+
+                if(is_array($request->details[$key]['fileuploads'] ?? null)){
+
+                    foreach ($value['fileuploads'] as $keyFile => $valueFile) {
+                        // dd($valueFile);
+
+                        $file_name = time().'_'.$valueFile[$keyFile]['files']->getClientOriginalName();
+                        $file_type = $valueFile[$keyFile]['files']->getClientOriginalExtension();
+                        $file_path = '/storage/audit/'.$file_name;
+                        
+                        Storage::disk('audit_file')->put($file_name,$valueFile[$keyFile]['files']);
+
+                        $fileUpload = new AuditChecklistFile ;
+                        $fileUpload->audit_uid = $request->audit_uid ;
+                        $fileUpload->question_uid = $request->question_uid ;
+                        $fileUpload->question_detail_uid = $value['id'] ;
+                        $fileUpload->filename = $file_name ;
+                        $fileUpload->filepath = $file_path ;
+                        $fileUpload->filetype = $file_type ;
+                        // $fileUpload->filesize = $valueFile->filesize ;
+                        $fileUpload->save();
+
+                    }
+                }
                
             }            
 

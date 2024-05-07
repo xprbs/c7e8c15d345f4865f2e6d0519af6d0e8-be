@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth, Validator, DB, Exception;
+use Auth, Validator, DB, Exception, Config;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
@@ -11,10 +11,12 @@ use GuzzleHttp\Exception\ClientException;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Database\QueryException;
 
 use App\Helper\WebHelper;
 
+use App\Models\Workflow;
 use App\Models\Surveillance;
 use App\Models\SurveillanceDetail;
 
@@ -137,7 +139,27 @@ class SurveillanceController extends Controller
                 $detail->comment02 = $value['comment02'];
                 $detail->save();
             }
-            
+
+            $workflow = Workflow::where('doc_type','PIC_DEPT')->where('key01', $request->project_location)->get();
+
+            if($workflow){
+                foreach ($workflow as $key => $value) {
+
+                    $TITLE = "NOTIF_SURVEILLANCE";
+                    $NO = $model->project_number;
+                    $Description = "You have notification \nPlease check and follow up the findings \nFollowing detail below\n";
+                    $enter = "\n";
+                    $env = Config::get('app.name') ;
+                    $baseUrl = URL::to('');
+                    $MSG = $TITLE.$enter.$NO.$enter.$Description.$enter.$baseUrl.$enter.$env ;
+
+                    $TO = $value->user->hp.'@c.us';
+
+                    WebHelper::WA_HELPER('NOTIF_SURVEILLANCE', $TO, $MSG);
+
+                }
+            }
+
             DB::commit();  
             return response()->json([
                 'code' => 200,

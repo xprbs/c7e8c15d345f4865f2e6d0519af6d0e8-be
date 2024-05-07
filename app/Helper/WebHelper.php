@@ -157,4 +157,50 @@ class WebHelper
 
         return $model ?? 0 ;
     }
+
+    public static function WA_HELPER($KEY, $TO, $MSG)
+    {
+        $options = [
+            'verify' => false , 
+            'headers' => [ 
+                'Accept' => '*/*',
+                'Content-Type' => 'application/json',
+            ],
+        ];        
+
+        $chat_id = $TO;
+        $Message = $MSG ;
+
+        $host = Config::get('app.WA_SERVER') ;
+        $url = $host.'send-message-v2';
+        $body = [
+                    "phone_number" => $chat_id,
+                    "message" => $Message,
+        ];
+
+        try {
+            
+            $client = new Client($options);
+            // $response = $client->get($url);
+            $response = $client->post($url,  ['json' => $body ]);
+            $getBody = $response->getBody();
+            $data = json_decode($getBody);
+          
+        } catch (ClientException $e) {
+            
+            $error = [
+                'request' => json_decode($e->getRequest()->getBody(true)),
+                'response' => json_decode($e->getResponse()->getBody(true))
+            ];
+
+        } catch (ServerException $e) {
+            
+            $error = [
+                'request' => json_decode($e->getRequest()->getBody(true)),
+                'response' => json_decode($e->getResponse()->getBody(true))
+            ];
+            
+        }
+    }
+    
 }
