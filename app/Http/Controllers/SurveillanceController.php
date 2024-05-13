@@ -143,6 +143,8 @@ class SurveillanceController extends Controller
                 $detail->dataAreaId = $request->dataAreaId;
                 $detail->project_uid = $model->project_uid;
                 $detail->image = $file_path;
+                $detail->file_name = $file_name;
+                $detail->file_type = $file_type;
                 $detail->geo_location = $value['geo_location'];
                 $detail->description = $value['description'];
                 $detail->comment01 = $value['comment01'];

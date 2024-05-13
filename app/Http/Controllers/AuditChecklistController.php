@@ -230,32 +230,32 @@ class AuditChecklistController extends Controller
             "details.*.id" => "required",
             "details.*.answer" => "nullable",
             "details.*.answer_description" => "nullable",
-            // 'details.*.file_uploads' => "required|mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
+            'details.*.file_uploads.*' => "mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
         ]);
 
-        $attchment = $request->file('file_uploads');
+        // $attchment = $request->file('file_uploads');
 
-        $file_name = time().'_'.$attchment->getClientOriginalName();
-        $file_type = $attchment->getClientOriginalExtension();
-        $file_path = '/storage/audit/attactment-process/'.$file_name;
+        // $file_name = time().'_'.$attchment->getClientOriginalName();
+        // $file_type = $attchment->getClientOriginalExtension();
+        // $file_path = '/storage/audit/attactment-process/'.$file_name;
         
-        // $attchment->move(storage() . '/audit/attactment-process/', $file_name);
-        Storage::putFileAs('/public/audit/attactment-process/',$attchment,$file_name);
+        // // $attchment->move(storage() . '/audit/attactment-process/', $file_name);
+        // Storage::putFileAs('/public/audit/attactment-process/',$attchment,$file_name);
 
-        $fileUpload = new AuditChecklistFile ;
-        $fileUpload->audit_uid = $request->audit_uid ;
-        $fileUpload->question_uid = $request->question_uid ;
-        // $fileUpload->question_detail_uid = $value['id'] ;
-        $fileUpload->filename = $file_name ;
-        $fileUpload->filepath = $file_path ;
-        $fileUpload->filetype = $file_type ;
-        // $fileUpload->filesize = $valueFile->filesize ;
-        $fileUpload->save();
+        // $fileUpload = new AuditChecklistFile ;
+        // $fileUpload->audit_uid = $request->audit_uid ;
+        // $fileUpload->question_uid = $request->question_uid ;
+        // // $fileUpload->question_detail_uid = $value['id'] ;
+        // $fileUpload->filename = $file_name ;
+        // $fileUpload->filepath = $file_path ;
+        // $fileUpload->filetype = $file_type ;
+        // // $fileUpload->filesize = $valueFile->filesize ;
+        // $fileUpload->save();
 
-        return response()->json([
-            'code' => 200,
-            'message' => 'Successfully created data',
-        ], 200);
+        // return response()->json([
+        //     'code' => 200,
+        //     'message' => 'Successfully created data',
+        // ], 200);
 
         // dd($request->all());
         // dd(is_array($request->details[0]['file_uploads'] ?? null));
