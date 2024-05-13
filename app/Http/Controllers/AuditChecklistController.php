@@ -230,7 +230,7 @@ class AuditChecklistController extends Controller
             "details.*.id" => "required",
             "details.*.answer" => "nullable",
             "details.*.answer_description" => "nullable",
-            'details.*.file_uploads.*' => "mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
+            'details.*.file_uploads.*.files' => "mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
         ]);
 
         // $attchment = $request->file('file_uploads');
