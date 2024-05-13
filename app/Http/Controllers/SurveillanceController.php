@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 
 use App\Helper\WebHelper;
 
