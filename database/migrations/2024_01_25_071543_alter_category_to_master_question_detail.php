@@ -19,7 +19,7 @@ class AlterCategoryToMasterQuestionDetail extends Migration
             $table->text('question_category3')->nullable();
             $table->text('question_category4')->nullable();
             $table->text('question_category5')->nullable();
-            $table->text('question_category5')->nullable();
+            $table->text('question_category6')->nullable();
         });
     }
 
