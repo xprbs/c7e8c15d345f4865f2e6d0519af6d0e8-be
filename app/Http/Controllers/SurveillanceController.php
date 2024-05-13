@@ -97,6 +97,7 @@ class SurveillanceController extends Controller
             "project_date" => "required",
             "due_date" => "nullable",
             "finding" => "required",
+            "is_she" => "required",
             "recommendation" => "nullable",
             "risk" => "nullable",
             "details.*.image" => "nullable",
@@ -123,16 +124,24 @@ class SurveillanceController extends Controller
             $model->project_date = Carbon::parse($request->project_date)->format('Y-m-d');
             $model->due_date = Carbon::parse($request->due_date)->format('Y-m-d');
             $model->finding = $request->finding;
+            $model->is_she = $request->is_she == 1 ? 'SHE' : 'NON_SHE';
             $model->recommendation = $request->recommendation;
             $model->risk = $request->risk;
             $model->save();
 
             foreach ($request->details as $key => $value) {
 
+                $attchment = $value['image'];
+
+                $file_name = time().'_'.$attchment->getClientOriginalName();
+                $file_type = $attchment->getClientOriginalExtension();
+                $file_path = '/storage/audit/surveillances/'.$file_name;
+                Storage::putFileAs('/public/audit/surveillances/',$attchment,$file_name);
+
                 $detail = new SurveillanceDetail();
                 $detail->dataAreaId = $request->dataAreaId;
                 $detail->project_uid = $model->project_uid;
-                // $detail->image = $value['image'];
+                $detail->image = $file_path;
                 $detail->geo_location = $value['geo_location'];
                 $detail->description = $value['description'];
                 $detail->comment01 = $value['comment01'];
