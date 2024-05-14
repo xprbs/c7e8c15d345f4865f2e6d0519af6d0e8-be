@@ -230,36 +230,8 @@ class AuditChecklistController extends Controller
             "details.*.id" => "required",
             "details.*.answer" => "nullable",
             "details.*.answer_description" => "nullable",
-            'details.*.file_uploads.*.files' => "mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
+            // 'details.*.file_uploads.*.files' => "mimes:doc,docx,xls,xlsx,ppt,pptx,pdf"
         ]);
-
-        // $attchment = $request->file('file_uploads');
-
-        // $file_name = time().'_'.$attchment->getClientOriginalName();
-        // $file_type = $attchment->getClientOriginalExtension();
-        // $file_path = '/storage/audit/attactment-process/'.$file_name;
-        
-        // // $attchment->move(storage() . '/audit/attactment-process/', $file_name);
-        // Storage::putFileAs('/public/audit/attactment-process/',$attchment,$file_name);
-
-        // $fileUpload = new AuditChecklistFile ;
-        // $fileUpload->audit_uid = $request->audit_uid ;
-        // $fileUpload->question_uid = $request->question_uid ;
-        // // $fileUpload->question_detail_uid = $value['id'] ;
-        // $fileUpload->filename = $file_name ;
-        // $fileUpload->filepath = $file_path ;
-        // $fileUpload->filetype = $file_type ;
-        // // $fileUpload->filesize = $valueFile->filesize ;
-        // $fileUpload->save();
-
-        // return response()->json([
-        //     'code' => 200,
-        //     'message' => 'Successfully created data',
-        // ], 200);
-
-        // dd($request->all());
-        // dd(is_array($request->details[0]['file_uploads'] ?? null));
-        // dd($request->hasFile("details[0]['file_uploads[0]']"));
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
@@ -274,11 +246,13 @@ class AuditChecklistController extends Controller
 
             foreach ($request->details as $key => $value) {
 
+                $question_detail_uid = $value['id'];
+                
                 AuditChecklistAnswerModel::updateOrCreate([
                     'dataAreaId'          => $request->dataAreaId ?? null,
                     'audit_uid'           => $request->audit_uid,
                     'question_uid'        => $request->question_uid,
-                    'question_detail_uid' => $value['id'],
+                    'question_detail_uid' => $question_detail_uid,
                 ],[ 
                     'answer'              => $value['answer'],
                     'answer_description'  => $value['answer_description'],
@@ -289,18 +263,19 @@ class AuditChecklistController extends Controller
                 if(is_array($request->details[$key]['file_uploads'] ?? null)){
 
                     foreach ($value['file_uploads'] as $keyFile => $valueFile) {
-                        // dd($valueFile);
 
-                        $file_name = time().'_'.$valueFile[$keyFile]['files']->getClientOriginalName();
-                        $file_type = $valueFile[$keyFile]['files']->getClientOriginalExtension();
-                        $file_path = '/storage/audit/'.$file_name;
+                        $PATH = '/audit/checklist/'.$request->audit_uid.'/'.$request->question_uid.'/'.$question_detail_uid.'/' ;
                         
-                        Storage::disk('audit_file')->put($file_name,$valueFile[$keyFile]['files']);
+                        $attchment = $valueFile['files'];
+                        $file_name = time().'_'.$attchment->getClientOriginalName();
+                        $file_type = $attchment->getClientOriginalExtension();
+                        $file_path = '/storage'.$PATH.$file_name;
+                        Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
 
                         $fileUpload = new AuditChecklistFile ;
                         $fileUpload->audit_uid = $request->audit_uid ;
                         $fileUpload->question_uid = $request->question_uid ;
-                        $fileUpload->question_detail_uid = $value['id'] ;
+                        $fileUpload->question_detail_uid = $question_detail_uid ;
                         $fileUpload->filename = $file_name ;
                         $fileUpload->filepath = $file_path ;
                         $fileUpload->filetype = $file_type ;

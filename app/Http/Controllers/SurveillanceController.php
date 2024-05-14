@@ -132,18 +132,20 @@ class SurveillanceController extends Controller
 
             foreach ($request->details as $key => $value) {
 
+                $PATH = '/audit/surveillances/'.$model->project_uid.'/' ;
+                
                 $attchment = $value['image'];
 
                 $file_name = time().'_'.$attchment->getClientOriginalName();
                 $file_type = $attchment->getClientOriginalExtension();
-                $file_path = '/storage/audit/surveillances/'.$file_name;
-                Storage::putFileAs('/public/audit/surveillances/',$attchment,$file_name);
+                $file_path = '/storage'.$PATH.$file_name;
+                Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
 
                 $detail = new SurveillanceDetail();
                 $detail->dataAreaId = $request->dataAreaId;
                 $detail->project_uid = $model->project_uid;
                 $detail->image = $file_path;
-                $detail->file_name = $file_name;
+                $detail->filename = $file_name;
                 $detail->file_type = $file_type;
                 $detail->geo_location = $value['geo_location'];
                 $detail->description = $value['description'];
