@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Auth;
+use App\Models\OrganizationModels;
+use App\Models\SurveillanceDetail;
 
 class Surveillance extends Model
 {
@@ -25,5 +27,15 @@ class Surveillance extends Model
             $item->entity_uid = Auth::user()->entity_uid ; //assigning entity
             $item->created_by = Auth::user()->user_uid ;             
         });
+    }
+
+    public function dept() 
+    {
+        return $this->hasOne(OrganizationModels::class,"unit_code","project_location");
+    }
+
+    public function detail()
+    {
+        return $this->hasMany(SurveillanceDetail::class,"project_uid","project_uid");
     }
 }

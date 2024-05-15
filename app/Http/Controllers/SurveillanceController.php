@@ -192,4 +192,57 @@ class SurveillanceController extends Controller
             return response()->json($error, 500);
         }
     }
+
+    public function surveillanceDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "project_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        try{
+
+            $model = Surveillance::where('project_uid', $request->project_uid)->get();
+
+            $data_master = array() ;
+
+            foreach ($model as $key => $value) {
+                // dd($value);
+                $data_master['dataAreaId']          = $value['dataAreaId'] ;
+                $data_master['project_uid']          = $value['project_uid'] ;
+                $data_master['project_location']          = $value->dept['unit_description'] ?? null ;
+                $data_master['project_number']          = $value['project_number'] ;
+                $data_master['project_name']          = $value['project_name'] ;
+                $data_master['project_date']          = Carbon::parse($value['project_date'])->format('Y-m-d') ;
+                $data_master['due_date']          = Carbon::parse($value['due_date'])->format('Y-m-d') ;
+                $data_master['finding']          = $value['finding'] ;
+                $data_master['recommendation']          = $value['recommendation'] ;
+                $data_master['risk']                = $value['risk'] ;
+                $data_master['is_she']                = $value['is_she'] ;
+                $data_master['detail']                = $value->detail ;
+
+            }
+
+            DB::commit();  
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
+                'data' => $data_master
+            ], 200);
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+
+    }
 }

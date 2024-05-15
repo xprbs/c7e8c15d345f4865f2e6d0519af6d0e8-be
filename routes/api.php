@@ -131,6 +131,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
         Route::group(['prefix' => 'surveillance'], function () {
             Route::post('/list', [SurveillanceController::class, 'surveillanceList']);
             Route::post('/store', [SurveillanceController::class, 'surveillanceStore']);
+            Route::post('/detail', [SurveillanceController::class, 'surveillanceDetail']);
         });
     });
     
