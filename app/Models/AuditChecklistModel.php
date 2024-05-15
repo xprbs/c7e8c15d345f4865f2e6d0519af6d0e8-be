@@ -11,6 +11,7 @@ use App\Models\CompanyModel;
 use App\Models\MasterQuestionModel;
 use App\Models\AuditChecklistAuditeeModel;
 use App\Models\AuditChecklistAuditorModel;
+use Auth;
 
 class AuditChecklistModel extends Model
 {
