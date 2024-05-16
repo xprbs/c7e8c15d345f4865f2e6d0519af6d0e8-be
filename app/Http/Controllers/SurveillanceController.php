@@ -67,6 +67,9 @@ class SurveillanceController extends Controller
             $data_master[$key]['finding'] = $value->finding;
             $data_master[$key]['recommendation'] = $value->recommendation;
             $data_master[$key]['risk'] = $value->risk;
+            $data_master[$key]['is_she'] = $value->is_she;
+            $data_master[$key]['status'] = Surveillance::STATUS[$value->status ?? 0];
+            $data_master[$key]['project_location']          = $value->dept['unit_description'] ?? null ;
 
         }
         
@@ -128,6 +131,7 @@ class SurveillanceController extends Controller
             $model->is_she = $request->is_she == 1 ? 'SHE' : 'NON_SHE';
             $model->recommendation = $request->recommendation;
             $model->risk = $request->risk;
+            $model->status = $request->is_she == 1 ? Surveillance::IS_REVIEW : Surveillance::IS_COMPLETED;
             $model->save();
 
             foreach ($request->details as $key => $value) {
