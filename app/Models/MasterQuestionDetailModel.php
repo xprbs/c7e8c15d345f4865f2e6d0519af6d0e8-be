@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Auth;
 use App\Models\MasterAnswerModel;
+use App\Models\AuditChecklistFile;
 
 class MasterQuestionDetailModel extends Model
 {
@@ -34,6 +35,16 @@ class MasterQuestionDetailModel extends Model
     public function answer()
     {
         return $this->hasMany(MasterAnswerModel::class,'question_answer_uid','question_answer_uid')->orderBy('order','ASC');
+    }
+
+    public function GET_FILES($audit_uid, $question_uid, $question_detail_uid)
+    {
+        $model = AuditChecklistFile::where('audit_uid', $audit_uid)
+                                    ->where('question_uid', $question_uid)
+                                    ->where('question_detail_uid', $question_detail_uid)
+                                    ->get();
+
+        return $model ;
     }
 
 }

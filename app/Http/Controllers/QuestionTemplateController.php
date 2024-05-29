@@ -230,6 +230,7 @@ class QuestionTemplateController extends Controller
             $data_array[$key]['question_answer_description'] = $value->question_answer_description;
             $data_array[$key]['question_answer_category'] = $value->answerName->question_answer_category ?? null ;
             $data_array[$key]['answer'] = $value->answer ?? null ;
+            $data_array[$key]['files'] = MasterQuestionDetailModel::GET_FILES($request->audit_uid, $value->question_uid, $value->question_detail_uid) ;
             $data_array[$key]['klausul'] = $value->klausul ?? '-' ;
             $data_array[$key]['question_category1'] = $value->question_category1 ?? '-' ;
             $data_array[$key]['question_category2'] = $value->question_category2 ?? '-' ;
