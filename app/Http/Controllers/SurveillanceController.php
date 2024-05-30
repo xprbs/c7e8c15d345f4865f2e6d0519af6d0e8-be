@@ -20,6 +20,7 @@ use App\Helper\WebHelper;
 use App\Models\Workflow;
 use App\Models\Surveillance;
 use App\Models\SurveillanceDetail;
+use App\Models\SurveillanceHistory;
 
 class SurveillanceController extends Controller
 {
@@ -68,7 +69,7 @@ class SurveillanceController extends Controller
             $data_master[$key]['recommendation'] = $value->recommendation;
             $data_master[$key]['risk'] = $value->risk;
             $data_master[$key]['is_she'] = $value->is_she;
-            $data_master[$key]['status'] = Surveillance::STATUS[$value->status ?? 0];
+            $data_master[$key]['status'] = Surveillance::STATUS[$value->status ?? 10];
             $data_master[$key]['project_location']          = $value->dept['unit_description'] ?? null ;
 
         }
@@ -131,7 +132,7 @@ class SurveillanceController extends Controller
             $model->is_she = $request->is_she == 1 ? 'SHE' : 'NON_SHE';
             $model->recommendation = $request->recommendation;
             $model->risk = $request->risk;
-            $model->status = $request->is_she == 1 ? Surveillance::IS_REVIEW : Surveillance::IS_COMPLETED;
+            $model->status = $request->is_she == 1 ? Surveillance::IS_CREATED : Surveillance::IS_COMPLETED;
             $model->save();
 
             foreach ($request->details as $key => $value) {
@@ -177,6 +178,12 @@ class SurveillanceController extends Controller
 
                 }
             }
+
+            $history = new SurveillanceHistory;
+            $history->dataAreaId = $request->dataAreaId;
+            $history->project_uid = $model->project_uid;
+            $history->doc_type = Surveillance::IS_CREATED;
+            $history->save();
 
             DB::commit();  
             return response()->json([
@@ -234,6 +241,62 @@ class SurveillanceController extends Controller
                 'code' => 200,
                 'message' => 'Successfully created data',
                 'data' => $data_master
+            ], 200);
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+
+    }
+
+    public function surveillanceFollowUp(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "dataAreaId" => "required",
+            "project_uid" => "required",
+            "note" => "required",
+            "file" => "required",
+            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();  
+
+        try {
+
+            $PATH = '/audit/surveillances/'.$model->project_uid.'/followup/' ;
+                
+            $attchment = $value['image'];
+
+            $file_name = time().'_'.$attchment->getClientOriginalName();
+            $file_type = $attchment->getClientOriginalExtension();
+            $file_path = '/storage'.$PATH.$file_name;
+            Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
+
+            $model = new SurveillanceHistory;
+            $model->dataAreaId = $request->dataAreaId;
+            $model->project_uid = $request->project_uid;
+            $model->doc_type = Surveillance::IS_FOLLOWUP;
+            $model->note = $request->note;
+            $model->path = $file_path;
+            $model->filename = $file_name;
+            $model->save();
+
+            DB::commit();  
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully created data',
             ], 200);
 
         } catch (Exception $e) {

@@ -15,15 +15,20 @@ class Surveillance extends Model
 {
     use HasFactory;
     
-    public const IS_COMPLETED = 30 ;
-    public const IS_REJECTED = 40 ;
     public const IS_REVIEW = 20 ;
+    
+    public const IS_CREATED = 10 ;
+    public const IS_FOLLOWUP = 20 ;
+    public const IS_CLOSED = 30 ;
+    public const IS_COMPLETED = 40 ;
+    public const IS_REJECTED = 50 ;
 
     public const STATUS = [ 
-        0 => 'Created', 
-        20 => 'On Review', 
-        30 => 'Completed' ,
-        40 => 'Rejected' 
+        10 => 'Created', 
+        20 => 'Follow Up', 
+        30 => 'Closed' ,
+        40 => 'Completed', 
+        50 => 'Rejected' 
     ];
 
     public static function boot() {
