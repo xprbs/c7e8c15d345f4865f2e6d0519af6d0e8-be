@@ -262,8 +262,8 @@ class SurveillanceController extends Controller
         $validator = Validator::make($request->all(),[
             "dataAreaId" => "required",
             "project_uid" => "required",
-            "note" => "required",
-            "file" => "required",
+            "note" => "nullable",
+            "file" => "nullable",
             
         ]);
 
@@ -289,8 +289,8 @@ class SurveillanceController extends Controller
             $model->project_uid = $request->project_uid;
             $model->doc_type = Surveillance::IS_FOLLOWUP;
             $model->note = $request->note;
-            $model->path = $file_path;
-            $model->filename = $file_name;
+            $model->path = $file_path ?? null;
+            $model->filename = $file_name ?? null;
             $model->save();
 
             DB::commit();  

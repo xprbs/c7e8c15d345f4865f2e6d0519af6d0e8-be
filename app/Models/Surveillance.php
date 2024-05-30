@@ -15,8 +15,6 @@ class Surveillance extends Model
 {
     use HasFactory;
     
-    public const IS_REVIEW = 20 ;
-    
     public const IS_CREATED = 10 ;
     public const IS_FOLLOWUP = 20 ;
     public const IS_CLOSED = 30 ;
