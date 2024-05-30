@@ -133,6 +133,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::post('/store', [SurveillanceController::class, 'surveillanceStore']);
             Route::post('/detail', [SurveillanceController::class, 'surveillanceDetail']);
             Route::post('/history', [SurveillanceController::class, 'surveillanceHistory']);
+            Route::post('/history-get', [SurveillanceController::class, 'surveillanceHistoryGet']);
         });
     });
     

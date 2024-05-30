@@ -277,7 +277,7 @@ class SurveillanceController extends Controller
         try {
 
             if($request->has('file')){
-                
+
                 $PATH = '/audit/surveillances/'.$request->project_uid.'/'.$request->doc_type.'/' ;
                 
                 $attchment = $request->file;
@@ -315,6 +315,35 @@ class SurveillanceController extends Controller
 
             return response()->json($error, 500);
         }
+
+    }
+
+    public function surveillanceHistoryGet(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "project_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $model = SurveillanceHistory::where('project_uid', $request->project_uid)->orderBy('id','ASC')->get();
+
+        $data_master = [] ;
+
+        foreach ($model as $key => $value) {
+            $data_master[$key]['project_uid'] = $value->project_uid;
+            $data_master[$key]['doc_type'] = Surveillance::STATUS[$value->doc_type];
+            $data_master[$key]['note'] = $value->note;
+            $data_master[$key]['path'] = $value->path;
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Successfully created data',
+            'data' => $data_master
+        ], 200);
 
     }
 }
