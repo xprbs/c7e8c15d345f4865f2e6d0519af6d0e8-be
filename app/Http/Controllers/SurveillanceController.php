@@ -277,7 +277,7 @@ class SurveillanceController extends Controller
 
             $PATH = '/audit/surveillances/'.$request->project_uid.'/follow-up/' ;
                 
-            $attchment = $value['image'];
+            $attchment = $request->file;
 
             $file_name = time().'_'.$attchment->getClientOriginalName();
             $file_type = $attchment->getClientOriginalExtension();
