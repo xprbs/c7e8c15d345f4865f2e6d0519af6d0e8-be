@@ -288,7 +288,10 @@ class SurveillanceController extends Controller
                 $file_path = '/storage'.$PATH.$file_name;
                 Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
             }
-            
+
+            Surveillance::where('project_uid',$request->project_uid)->update([
+                'status' => $request->doc_type
+            ]);            
 
             $model = new SurveillanceHistory;
             $model->dataAreaId = $request->dataAreaId;
