@@ -70,6 +70,7 @@ class SurveillanceController extends Controller
             $data_master[$key]['risk'] = $value->risk;
             $data_master[$key]['is_she'] = $value->is_she;
             $data_master[$key]['status'] = Surveillance::STATUS[$value->status ?? 10];
+            $data_master[$key]['status_code'] = $value->status ?? 10 ;
             $data_master[$key]['project_location']          = $value->dept['unit_description'] ?? null ;
 
         }
