@@ -341,6 +341,8 @@ class SurveillanceController extends Controller
             $data_master[$key]['doc_type'] = Surveillance::STATUS[$value->doc_type];
             $data_master[$key]['note'] = $value->note;
             $data_master[$key]['path'] = $value->path;
+            $data_master[$key]['created_date'] = Carbon::parse($value->created_at)->format('Y-m-d');
+            $data_master[$key]['created_by'] = $value->user['name'];
         }
 
         return response()->json([

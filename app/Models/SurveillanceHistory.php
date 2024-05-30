@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Auth;
+use App\Models\User;
 
 class SurveillanceHistory extends Model
 {
@@ -28,5 +29,10 @@ class SurveillanceHistory extends Model
             $item->entity_uid = Auth::user()->entity_uid ; //assigning entity    
             $item->created_by = Auth::user()->user_uid ;
         });
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class,'user_uid','created_by');
     }
 }
