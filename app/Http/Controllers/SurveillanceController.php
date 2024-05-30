@@ -275,7 +275,7 @@ class SurveillanceController extends Controller
 
         try {
 
-            $PATH = '/audit/surveillances/'.$model->project_uid.'/followup/' ;
+            $PATH = '/audit/surveillances/'.$request->project_uid.'/follow-up/' ;
                 
             $attchment = $value['image'];
 
