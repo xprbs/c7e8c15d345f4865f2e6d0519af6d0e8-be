@@ -257,13 +257,14 @@ class SurveillanceController extends Controller
 
     }
 
-    public function surveillanceFollowUp(Request $request)
+    public function surveillanceHistory(Request $request)
     {
         $validator = Validator::make($request->all(),[
             "dataAreaId" => "required",
             "project_uid" => "required",
             "note" => "nullable",
             "file" => "nullable",
+            "doc_type" => "required" //20 Follow // 30 Closed 
             
         ]);
 
@@ -275,19 +276,23 @@ class SurveillanceController extends Controller
 
         try {
 
-            $PATH = '/audit/surveillances/'.$request->project_uid.'/follow-up/' ;
+            if($request->has('file')){
                 
-            $attchment = $request->file;
+                $PATH = '/audit/surveillances/'.$request->project_uid.'/'.$request->doc_type.'/' ;
+                
+                $attchment = $request->file;
 
-            $file_name = time().'_'.$attchment->getClientOriginalName();
-            $file_type = $attchment->getClientOriginalExtension();
-            $file_path = '/storage'.$PATH.$file_name;
-            Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
+                $file_name = time().'_'.$attchment->getClientOriginalName();
+                $file_type = $attchment->getClientOriginalExtension();
+                $file_path = '/storage'.$PATH.$file_name;
+                Storage::putFileAs('/public'.$PATH,$attchment,$file_name);
+            }
+            
 
             $model = new SurveillanceHistory;
             $model->dataAreaId = $request->dataAreaId;
             $model->project_uid = $request->project_uid;
-            $model->doc_type = Surveillance::IS_FOLLOWUP;
+            $model->doc_type = $request->doc_type;
             $model->note = $request->note;
             $model->path = $file_path ?? null;
             $model->filename = $file_name ?? null;
