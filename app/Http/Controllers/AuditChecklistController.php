@@ -391,4 +391,46 @@ class AuditChecklistController extends Controller
 
         return response()->json($success, 200);
     }
+
+    public function deleteFile(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            "id" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();  
+
+        try {
+
+            $model = AuditChecklistFile::find($request->id);
+
+            // Storage::disk('audit_file')->delete('$path' . $file_path);
+
+            $model->delete();
+
+            $success = [
+                'code' => 200,
+                'message' => 'Successfully delete data',
+            ];
+    
+            return response()->json($success, 200);
+
+        } catch (Exception $e) {
+
+            DB::rollBack();      
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+
+    }
 }
