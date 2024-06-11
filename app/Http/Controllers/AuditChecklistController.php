@@ -413,6 +413,8 @@ class AuditChecklistController extends Controller
 
             $model->delete();
 
+            DB::commit(); 
+
             $success = [
                 'code' => 200,
                 'message' => 'Successfully delete data',
