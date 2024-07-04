@@ -16,6 +16,7 @@ use Illuminate\Database\QueryException;
 use App\Models\WorkflowHistory;
 use App\Models\NoteHistory;
 use App\Models\AuditChecklistModel;
+use App\Models\AuditChecklistAnswerModel;
 
 class ApprovalController extends Controller
 {
@@ -82,8 +83,13 @@ class ApprovalController extends Controller
     public function AuditApprove(Request $request)
     {
         $validator = Validator::make($request->all(),[
+            "dataAreaId" => "nullable",
+            "question_uid" => "required",
             "audit_uid" => "nullable",
             "note" => "nullable",
+            "details.*.id" => "required",
+            "details.*.answer" => "nullable",
+            "details.*.answer_description" => "nullable",
         ]);
 
         if ($validator->fails()) {
@@ -93,6 +99,42 @@ class ApprovalController extends Controller
         DB::beginTransaction();
 
         try {
+
+            foreach ($request->details as $key => $value) {
+
+                $question_detail_uid = $value['id'];
+
+                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)->first();
+                
+                $validationchange = false;
+                $note = "Data has been changed,";
+                if($dataquestion->answer != $value['answer']){
+                    $note .= ' From <b>'.$dataquestion->answer.'</b> To <b>'.$value['answer'].'</b>';
+                }
+                
+                if($dataquestion->answer_description != $value['answer_description']){
+                    $note .= ' From <b>'.$dataquestion->answer_description.'</b> To <b>'.$value['answer_description'].'</b>';
+                }
+                
+                if($validationchange){
+                    $model = new NoteHistory;
+                    $model->audit_uid = $request->audit_uid;
+                    $model->question_uid = $request->question_uid;
+                    $model->question_detail_uid = $question_detail_uid;
+                    $model->note = $note;
+                    $model->save() ;
+                }
+                
+                AuditChecklistAnswerModel::updateOrCreate([
+                    'dataAreaId'          => $request->dataAreaId ?? null,
+                    'audit_uid'           => $request->audit_uid,
+                    'question_uid'        => $request->question_uid,
+                    'question_detail_uid' => $question_detail_uid,
+                ],[ 
+                    'answer'              => $value['answer'],
+                    'answer_description'  => $value['answer_description'],
+                ]);
+            }
             
             $approval = WorkflowHistory::where('doc_uid', $request->audit_uid)
                                 ->where('user_uid', Auth::user()->user_uid)
@@ -146,8 +188,13 @@ class ApprovalController extends Controller
     public function AuditReject(Request $request)
     {
         $validator = Validator::make($request->all(),[
+            "dataAreaId" => "nullable",
+            "question_uid" => "required",
             "audit_uid" => "nullable",
             "note" => "nullable",
+            "details.*.id" => "required",
+            "details.*.answer" => "nullable",
+            "details.*.answer_description" => "nullable",
         ]);
 
         if ($validator->fails()) {
@@ -157,6 +204,42 @@ class ApprovalController extends Controller
         DB::beginTransaction();
 
         try {
+
+            foreach ($request->details as $key => $value) {
+
+                $question_detail_uid = $value['id'];
+
+                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)->first();
+                
+                $validationchange = false;
+                $note = "Data has been changed,";
+                if($dataquestion->answer != $value['answer']){
+                    $note .= ' From <b>'.$dataquestion->answer.'</b> To <b>'.$value['answer'].'</b>';
+                }
+                
+                if($dataquestion->answer_description != $value['answer_description']){
+                    $note .= ' From <b>'.$dataquestion->answer_description.'</b> To <b>'.$value['answer_description'].'</b>';
+                }
+                
+                if($validationchange){
+                    $model = new NoteHistory;
+                    $model->audit_uid = $request->audit_uid;
+                    $model->question_uid = $request->question_uid;
+                    $model->question_detail_uid = $question_detail_uid;
+                    $model->note = $note;
+                    $model->save() ;
+                }
+                
+                AuditChecklistAnswerModel::updateOrCreate([
+                    'dataAreaId'          => $request->dataAreaId ?? null,
+                    'audit_uid'           => $request->audit_uid,
+                    'question_uid'        => $request->question_uid,
+                    'question_detail_uid' => $question_detail_uid,
+                ],[ 
+                    'answer'              => $value['answer'],
+                    'answer_description'  => $value['answer_description'],
+                ]);
+            }
             
             $approval = WorkflowHistory::where('doc_uid', $request->audit_uid)
                                 ->where('user_uid', Auth::user()->user_uid)
