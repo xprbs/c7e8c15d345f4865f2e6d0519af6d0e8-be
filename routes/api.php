@@ -8,6 +8,7 @@ use App\Http\Controllers\WebTransactionController;
 use App\Http\Controllers\AuditChecklistController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuditCategoryController;
+use App\Http\Controllers\AuditCategoryRefController;
 use App\Http\Controllers\QuestionTemplateController;
 use App\Http\Controllers\SurveillanceController;
 use App\Http\Controllers\CustomFieldController;
@@ -93,6 +94,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/list', [AuditCategoryController::class, 'auditCategoryList']);
                 Route::post('/store', [AuditCategoryController::class, 'auditCategoryStore']);
                 Route::post('/delete', [AuditCategoryController::class, 'auditCategoryDelete']);
+            });
+
+            Route::group(['prefix' => 'audit-category-ref'], function () {
+                Route::post('/list', [AuditCategoryRefController::class, 'auditCategoryRefList']);
+                Route::post('/store', [AuditCategoryRefController::class, 'auditCategoryRefStore']);
+                Route::post('/delete', [AuditCategoryRefController::class, 'auditCategoryRefDelete']);
             });
             
             Route::group(['prefix' => 'company'], function () {
