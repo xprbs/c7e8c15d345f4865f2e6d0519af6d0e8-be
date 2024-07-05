@@ -23,6 +23,7 @@ class AuditCategoryRefController extends Controller
     {
         $validator = Validator::make($request->all(),[
             "audit_category_ref" => "required",
+            "audit_category" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -34,6 +35,7 @@ class AuditCategoryRefController extends Controller
             $model = new MasterData;
             $model->key1 = $request->audit_category_ref;
             $model->value1 = $request->audit_category_ref;
+            $model->key2 = $request->audit_category;
             $model->doc_type = 'AUDIT_CATEGORY_REF';
             $model->save();
 
@@ -140,7 +142,7 @@ class AuditCategoryRefController extends Controller
     
     public function getAuditCategory(){
 
-        $model = MasterData::where('doc_type','AUDIT_CATEGORY_REF')
+        $model = MasterData::where('doc_type','AUDIT_CATEGORY')
                             ->orderBy('value1','ASC')
                             ->get();
 
