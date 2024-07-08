@@ -8,6 +8,8 @@ use App\Http\Controllers\WebTransactionController;
 use App\Http\Controllers\AuditChecklistController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuditCategoryController;
+use App\Http\Controllers\AuditeeController;
+use App\Http\Controllers\AuditorController;
 use App\Http\Controllers\AuditCategoryRefController;
 use App\Http\Controllers\QuestionTemplateController;
 use App\Http\Controllers\SurveillanceController;
@@ -94,6 +96,22 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/list', [AuditCategoryController::class, 'auditCategoryList']);
                 Route::post('/store', [AuditCategoryController::class, 'auditCategoryStore']);
                 Route::post('/delete', [AuditCategoryController::class, 'auditCategoryDelete']);
+            });
+
+            Route::group(['prefix' => 'auditee'], function () {
+                Route::post('/list', [AuditeeController::class, 'auditeeList']);
+                Route::post('/store', [AuditeeController::class, 'auditeeStore']);
+                Route::post('/update', [AuditeeController::class, 'auditeeUpdate']);
+                Route::post('/category', [AuditeeController::class, 'auditeeCategory']);
+                Route::post('/userlist', [AuditeeController::class, 'auditeeUserList']);
+            });
+
+            Route::group(['prefix' => 'auditor'], function () {
+                Route::post('/list', [AuditorController::class, 'auditorList']);
+                Route::post('/store', [AuditorController::class, 'auditorStore']);
+                Route::post('/update', [AuditorController::class, 'auditorUpdate']);
+                Route::post('/category', [AuditorController::class, 'auditorCategory']);
+                Route::post('/userlist', [AuditorController::class, 'auditorUserList']);
             });
 
             Route::group(['prefix' => 'audit-category-ref'], function () {

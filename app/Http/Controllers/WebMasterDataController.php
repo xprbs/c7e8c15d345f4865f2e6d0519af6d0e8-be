@@ -1045,7 +1045,7 @@ class WebMasterDataController extends Controller
 
     public function getAuditor()
     {
-        $model = MasterData::where('doc_type','IS_AUDITOR')->get();
+        $model = MasterData::where('doc_type','IS_AUDITOR')->where('key2', 1)->get();
 
         $data_array = [];
 
@@ -1065,7 +1065,7 @@ class WebMasterDataController extends Controller
 
     public function getAuditee()
     {
-        $model = MasterData::where('doc_type','IS_AUDITEE')->get();
+        $model = MasterData::where('doc_type','IS_AUDITEE')->where('key2', 1)->get();
 
         $data_array = [];
 
