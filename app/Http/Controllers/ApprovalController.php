@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\QueryException;
 
 use App\Models\WorkflowHistory;
+use App\Models\Workflow;
 use App\Models\NoteHistory;
 use App\Models\AuditChecklistModel;
 use App\Models\AuditChecklistAnswerModel;
@@ -104,16 +105,22 @@ class ApprovalController extends Controller
 
                 $question_detail_uid = $value['id'];
 
-                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)->first();
+
+                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)
+                                                            ->where('question_uid', $request->question_uid)
+                                                            ->where('audit_uid', $request->audit_uid)
+                                                            ->first();
                 
                 $validationchange = false;
-                $note = "Data has been changed,";
+                $note = "Data has been changed";
                 if($dataquestion->answer != $value['answer']){
-                    $note .= ' From <b>'.$dataquestion->answer.'</b> To <b>'.$value['answer'].'</b>';
+                    $validationchange = true;
+                    $note .= ', <b>Score From </b><i>'.$dataquestion->answer.'</i><b> To </b><i>'.$value['answer'].'</i></b>';
                 }
                 
                 if($dataquestion->answer_description != $value['answer_description']){
-                    $note .= ' From <b>'.$dataquestion->answer_description.'</b> To <b>'.$value['answer_description'].'</b>';
+                    $validationchange = true;
+                    $note .= ', <b>Notes From </b><i>'.$dataquestion->answer_description.'</i><b> To </b><i>'.$value['answer_description'].'</i></b>';
                 }
                 
                 if($validationchange){
@@ -148,7 +155,7 @@ class ApprovalController extends Controller
                 "command" => $request->note
             ]);
 
-            $nextApproval = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('priority', $nextPriority)->first();
+            $nextApproval = WorkflowHistory::where('doc_uid', $request->audit_uid)->where('priority', $nextPriority)->orderBy('id', 'DESC')->first();
             
             if ($nextApproval) {
 
@@ -209,16 +216,21 @@ class ApprovalController extends Controller
 
                 $question_detail_uid = $value['id'];
 
-                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)->first();
+                $dataquestion = AuditChecklistAnswerModel::where('question_detail_uid', $question_detail_uid)
+                                                            ->where('question_uid', $request->question_uid)
+                                                            ->where('audit_uid', $request->audit_uid)
+                                                            ->first();
                 
                 $validationchange = false;
-                $note = "Data has been changed,";
+                $note = "Data has been changed";
                 if($dataquestion->answer != $value['answer']){
-                    $note .= ' From <b>'.$dataquestion->answer.'</b> To <b>'.$value['answer'].'</b>';
+                    $validationchange = true;
+                    $note .= ', <b>Score From </b><i>'.$dataquestion->answer.'</i><b> To </b><i>'.$value['answer'].'</i></b>';
                 }
                 
                 if($dataquestion->answer_description != $value['answer_description']){
-                    $note .= ' From <b>'.$dataquestion->answer_description.'</b> To <b>'.$value['answer_description'].'</b>';
+                    $validationchange = true;
+                    $note .= ', <b>Notes From </b><i>'.$dataquestion->answer_description.'</i><b> To </b><i>'.$value['answer_description'].'</i></b>';
                 }
                 
                 if($validationchange){
@@ -252,10 +264,36 @@ class ApprovalController extends Controller
                 "command" => $request->note
             ]);
 
-            AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
-                "status" => 40
-            ]);
+            WorkflowHistory::where('doc_uid', $request->audit_uid)
+                                ->where('approval',0)
+                                ->delete();
 
+            if($approval->priority > 1){
+
+                $model = Workflow::where('doc_type','AUDIT_APPROVAL')
+                                    ->where('priority','>=',$approval->priority - 1)->get();  
+                
+                $num = 0;
+                foreach ($model as $key2 => $value2) {
+                    
+                    $approval = new WorkflowHistory();
+                    $approval->doc_type = 'AUDIT_APPROVAL';
+                    $approval->doc_uid = $request->audit_uid;
+                    $approval->user_uid = $value2->user_uid;
+                    $approval->user_name = $value2->user->name;
+                    $approval->priority = $value2->priority;
+                    $approval->approval = $num == 0 ? 1 : 0;
+                    $approval->save();
+                    $num++;
+                }
+
+            } else {
+
+                AuditChecklistModel::where('audit_uid', $request->audit_uid)->update([
+                    "status" => 40
+                ]);
+
+            }
             
             DB::commit();
 
