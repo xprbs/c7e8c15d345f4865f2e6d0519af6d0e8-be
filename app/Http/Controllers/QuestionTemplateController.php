@@ -60,6 +60,7 @@ class QuestionTemplateController extends Controller
             $data_master[$key]['question_type']          = $value->question_type ;
             $data_master[$key]['question_ref']          = $value->question_ref ;
             $data_master[$key]['question_uid']          = $value->question_uid ;
+            $data_master[$key]['inactive']          = $value->inactive ;
         }
         
         $success = [
@@ -122,6 +123,46 @@ class QuestionTemplateController extends Controller
 
             return response()->json($error, 500);
         }
+    }
+
+        public function questionTemplateUpdate(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "row_id" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try {
+            
+            $existingData = MasterQuestionModel::where('id', $request->row_id)->first();
+
+        if ($existingData->inactive === "1") {
+            $existingData->inactive = 0;
+            $existingData->save();
+        } else {
+            $existingData->inactive = 1;
+            $existingData->save();
+        }
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully updated data',
+            ], 200);
+
+        } catch (Exception $e) {
+
+
+            $error = [
+                'request' => json_decode($e),
+                'response' => json_decode($e)
+            ];
+
+            return response()->json($error, 500);
+        }
+
     }
     
     public function questionGetDetail(Request $request)
@@ -308,6 +349,7 @@ class QuestionTemplateController extends Controller
     {
 
         $model = MasterQuestionModel::where('question_dept', $request->question_dept)
+                            ->where('inactive', 1)
                             ->orderBy('id','DESC')
                             ->get();
 
