@@ -247,6 +247,58 @@ class QuestionTemplateController extends Controller
             return response()->json($error, 500);
         }
     }
+
+        public function questionDetailUpdateStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "row_id" => "required",
+            "question_answer_description" => "required",
+            "control_point" => "required",
+            "klausul" => "required",
+            "question_category1" => "required",
+            "question_category2" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $model = MasterQuestionDetailModel::where('question_detail_uid', $request->row_id)->first();
+
+            if ($model) {
+                $model->question_answer_description = $request->question_answer_description;
+                $model->klausul = $request->klausul;
+                $model->control_point = $request->control_point;
+                $model->question_category1 = $request->question_category1;
+                $model->question_category2 = $request->question_category2;
+                $model->save();
+
+                DB::commit();
+                return response()->json([
+                    'code' => 200,
+                    'message' => 'Successfully updated data',
+                ], 200);
+            } else {
+                DB::rollBack();
+                return response()->json([
+                    'code' => 404,
+                    'message' => 'Record not found',
+                ], 404);
+            }
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            $error = [
+                'code' => 500,
+                'request' => $request->all(),
+                'response' => $e->getMessage()
+            ];
+
+            return response()->json($error, 500);
+        }
+    }
     
     public function getQuestionDetailList(Request $request)
     {
@@ -259,7 +311,7 @@ class QuestionTemplateController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $model = MasterQuestionDetailModel::where('question_uid', $request->question_uid)->get();          
+        $model = MasterQuestionDetailModel::where('question_uid', $request->question_uid)->whereNull('deleted_at')->get();          
         // dd($model->count());
         $data_array = [];
 
@@ -283,6 +335,28 @@ class QuestionTemplateController extends Controller
             'code' => 200,
             'message' => 'Successfully get data',
             'data' => $data_array,
+        ];
+
+        return response()->json($success, 200);
+    }
+
+        public function getQuestionEditDetailList(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            "question_detail_uid" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $model = MasterQuestionDetailModel::where('question_detail_uid', $request->question_detail_uid)->whereNull('deleted_at')->first();          
+
+        $success = [
+            'code' => 200,
+            'message' => 'Successfully get data',
+            'data' => $model,
         ];
 
         return response()->json($success, 200);
@@ -367,5 +441,37 @@ class QuestionTemplateController extends Controller
         ];
 
         return response()->json($success, 200);
+    }
+
+        public function questionDetailDelete(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "row_id" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try {
+            
+             MasterQuestionDetailModel::where('question_detail_uid', $request->row_id)->delete();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Successfully updated data',
+            ], 200);
+
+        } catch (Exception $e) {
+
+
+            $error = [
+                'request' => json_decode($e),
+                'response' => json_decode($e)
+            ];
+
+            return response()->json($error, 500);
+        }
+
     }
 }

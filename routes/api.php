@@ -88,9 +88,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
                 Route::post('/update', [QuestionTemplateController::class, 'questionTemplateUpdate']);
                 Route::post('/get-detail', [QuestionTemplateController::class, 'questionGetDetail']);
                 Route::post('/question-detail-store', [QuestionTemplateController::class, 'questionDetailStore']);
+                Route::post('/question-detail-update-store', [QuestionTemplateController::class, 'questionDetailUpdateStore']);
                 Route::post('/question-detail-list', [QuestionTemplateController::class, 'getQuestionDetailList']);
+                Route::post('/question-edit-detail-list', [QuestionTemplateController::class, 'getQuestionEditDetailList']);
                 Route::post('/get-master-answer', [QuestionTemplateController::class, 'getMasterAnswer']);
                 Route::post('/get-master-answer-id', [QuestionTemplateController::class, 'getMasterAnswerId']);
+                Route::post('/question-detail-delete', [QuestionTemplateController::class, 'questionDetailDelete']);
             });
 
             Route::group(['prefix' => 'audit-category'], function () {
