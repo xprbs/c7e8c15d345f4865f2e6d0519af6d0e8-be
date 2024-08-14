@@ -8,6 +8,9 @@ use App\Http\Controllers\WebTransactionController;
 use App\Http\Controllers\AuditChecklistController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuditCategoryController;
+use App\Http\Controllers\AuditeeController;
+use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\AuditCategoryRefController;
 use App\Http\Controllers\QuestionTemplateController;
 use App\Http\Controllers\SurveillanceController;
 use App\Http\Controllers\CustomFieldController;
@@ -91,17 +94,43 @@ Route::group(['middleware' => 'jwt.verify'], function () {
             Route::group(['prefix' => 'question-template'], function () {
                 Route::post('/list', [QuestionTemplateController::class, 'questionTemplateList']);
                 Route::post('/store', [QuestionTemplateController::class, 'questionTemplateStore']);
+                Route::post('/update', [QuestionTemplateController::class, 'questionTemplateUpdate']);
                 Route::post('/get-detail', [QuestionTemplateController::class, 'questionGetDetail']);
                 Route::post('/question-detail-store', [QuestionTemplateController::class, 'questionDetailStore']);
+                Route::post('/question-detail-update-store', [QuestionTemplateController::class, 'questionDetailUpdateStore']);
                 Route::post('/question-detail-list', [QuestionTemplateController::class, 'getQuestionDetailList']);
+                Route::post('/question-edit-detail-list', [QuestionTemplateController::class, 'getQuestionEditDetailList']);
                 Route::post('/get-master-answer', [QuestionTemplateController::class, 'getMasterAnswer']);
                 Route::post('/get-master-answer-id', [QuestionTemplateController::class, 'getMasterAnswerId']);
+                Route::post('/question-detail-delete', [QuestionTemplateController::class, 'questionDetailDelete']);
             });
 
             Route::group(['prefix' => 'audit-category'], function () {
                 Route::post('/list', [AuditCategoryController::class, 'auditCategoryList']);
                 Route::post('/store', [AuditCategoryController::class, 'auditCategoryStore']);
                 Route::post('/delete', [AuditCategoryController::class, 'auditCategoryDelete']);
+            });
+
+            Route::group(['prefix' => 'auditee'], function () {
+                Route::post('/list', [AuditeeController::class, 'auditeeList']);
+                Route::post('/store', [AuditeeController::class, 'auditeeStore']);
+                Route::post('/update', [AuditeeController::class, 'auditeeUpdate']);
+                Route::post('/category', [AuditeeController::class, 'auditeeCategory']);
+                Route::post('/userlist', [AuditeeController::class, 'auditeeUserList']);
+            });
+
+            Route::group(['prefix' => 'auditor'], function () {
+                Route::post('/list', [AuditorController::class, 'auditorList']);
+                Route::post('/store', [AuditorController::class, 'auditorStore']);
+                Route::post('/update', [AuditorController::class, 'auditorUpdate']);
+                Route::post('/category', [AuditorController::class, 'auditorCategory']);
+                Route::post('/userlist', [AuditorController::class, 'auditorUserList']);
+            });
+
+            Route::group(['prefix' => 'audit-category-ref'], function () {
+                Route::post('/list', [AuditCategoryRefController::class, 'auditCategoryRefList']);
+                Route::post('/store', [AuditCategoryRefController::class, 'auditCategoryRefStore']);
+                Route::post('/delete', [AuditCategoryRefController::class, 'auditCategoryRefDelete']);
             });
 
             Route::group(['prefix' => 'company'], function () {
