@@ -27,7 +27,7 @@ class CreateWorkflowHistoriesTable extends Migration
             $table->uuid('user_uid')->nullable();
             $table->string('user_name')->nullable();
             $table->string('priority')->nullable();
-            $table->string('approval')->nullable()->comment('1 waiting approval, 2 approve, 3 reject');
+            $table->string('approval')->nullable();
             $table->text('command')->nullable();
         });
     }
