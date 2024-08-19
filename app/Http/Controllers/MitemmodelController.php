@@ -13,8 +13,8 @@ class MitemmodelController extends Controller
 {
     public function index()
     {
-        $data = DB::connection('cotte_apps')->table('mitemmodel')->get();
-        $mproduct = DB::connection('cotte_apps')->table('mproductgroup')->get();
+        $data = DB::connection('cotte')->table('mitemmodel')->get();
+        $mproduct = DB::connection('cotte')->table('mproductgroup')->get();
         return response()->json([
             'code' => 200,
             'data' => [
