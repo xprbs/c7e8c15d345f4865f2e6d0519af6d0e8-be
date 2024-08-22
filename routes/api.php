@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiDynamicController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -52,6 +53,12 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => 'jwt.verify'], function () {
     Route::group(['prefix' => 'web'], function () {
+        Route::group(['prefix' => 'dynamic', 'controller' => ApiDynamicController::class], function () {
+            Route::get('get-token', 'getToken');
+            Route::get('fetch-uom', 'fetchUOM');
+            Route::get('product-categories', 'fetchProductCategories');
+            Route::get('financial-dimension', 'fetchFinancialDimension');
+        });
         Route::group(['prefix' => 'master'], function () {
             Route::post('/role-store', [WebMasterDataController::class, 'roleStore']);
             Route::post('/role-list', [WebMasterDataController::class, 'roleList']);
