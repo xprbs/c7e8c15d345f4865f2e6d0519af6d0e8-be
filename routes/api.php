@@ -21,6 +21,7 @@ use App\Http\Controllers\LogItemController;
 use App\Http\Controllers\MitemmodelController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SmsItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -205,5 +206,12 @@ Route::group(['middleware' => 'jwt.verify'], function () {
         Route::get('/storages/{id}', [StorageController::class, 'show']);
         Route::get('/reservations/{groupid}', [ReservationController::class, 'getReservations']);
         Route::get('/mitemmodel', [MitemmodelController::class, 'index']);
+    });
+
+    Route::prefix('sms')->controller(SmsItemController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::post('/', 'create');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}', 'update');
     });
 });
